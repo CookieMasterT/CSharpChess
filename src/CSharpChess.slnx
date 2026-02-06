@@ -1,3 +1,8 @@
 <Solution>
-  <Project Path="ChessEngine/CSharpChess.csproj" />
+  <Project Path="Client/ChessGUI/ChessGUI/ChessGUI.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="Server/ChessEngine/ChessEngine.csproj" />
+  <Project Path="Server/WebServer/WebServer.csproj" />
 </Solution>
