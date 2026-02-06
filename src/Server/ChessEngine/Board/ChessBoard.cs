@@ -6,7 +6,6 @@ namespace CSharpChess
 {
     internal static class ChessBoard
     {
-<<<<<<< HEAD
         public static List<Piece> Pieces = new List<Piece> { };
 
         public static bool IsTileOccupied(BoardSquare Tile)
@@ -20,7 +19,5 @@ namespace CSharpChess
             }
             return false;
         }
-=======
->>>>>>> Server.ChessEngine
     }
 }
