@@ -11,8 +11,9 @@ namespace CSharpChess
             Team = team;
         }
 
-        public virtual string Name { get => ChessNotation.PiecePlaceHolder; }
-        public string FullName
+        public virtual string[] Name { get => ChessNotation.PiecePlaceHolder; }
+        public string NotationName { get => this.Name[0]; }
+        public string ImageFileName
         {
             get
             {
@@ -22,7 +23,7 @@ namespace CSharpChess
                     case Team.white: teamName = ChessNotation.WhiteTeam; break;
                     case Team.black: teamName = ChessNotation.BlackTeam; break;
                 }
-                return $"{teamName}:{this.Name}";
+                return $"{this.Name[1]}-{teamName}.svg";
             }
         }
 

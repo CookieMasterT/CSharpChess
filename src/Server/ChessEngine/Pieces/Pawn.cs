@@ -10,6 +10,8 @@ namespace CSharpChess
         {
         }
 
+        public override string[] Name { get => ChessNotation.Pawn; }
+
         public override List<BoardSquare> LegalMoves => throw new NotImplementedException();
     }
 }

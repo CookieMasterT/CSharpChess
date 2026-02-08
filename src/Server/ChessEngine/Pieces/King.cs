@@ -10,7 +10,7 @@ namespace CSharpChess
         {
         }
 
-        public override string Name { get => ChessNotation.King; }
+        public override string[] Name { get => ChessNotation.King; }
 
         public override List<BoardSquare> LegalMoves => throw new NotImplementedException();
     }

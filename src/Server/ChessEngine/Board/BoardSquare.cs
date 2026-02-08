@@ -6,13 +6,13 @@
         private int _y; // The current rank indexed from 0
 
         public Piece? content;
-        public string ContentStr
+        public string ContentImageFileName
         {
             get
             {
                 if (content != null)
                 {
-                    return content.FullName;
+                    return content.ImageFileName;
                 }
                 return ChessNotation.EmptySquare;
             }
@@ -47,8 +47,10 @@
             }
         }
 
-        public char File => ChessNotation.LegalFileNames[_x];  // Display as file letters a..h
-        public char Rank => ChessNotation.LegalRankNames[_y]; // Display as rank numbers 1..8
+        public char File => ChessNotation.LegalFileNames[_x];
+        public char Rank => ChessNotation.LegalRankNames[_y];
+
+        public bool SquareColor => (_x % 2 + _y % 2) % 2 == 1; // true means white
 
         public bool Equals(BoardSquare other) => this.X == other.X && this.Y == other.Y;
         public override string ToString() => $"{File}{Rank}";
