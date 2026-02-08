@@ -1,0 +1,19 @@
+﻿@page "/chessboard"
+@using chessBoard = CSharpChess.ChessBoard;
+<h3>ChessBoard</h3>
+
+<table>
+    @for (int i = 0; i < 8; i++)
+    {
+        <tr>
+            @for (int k = 0; k < 8; k++)
+            {
+                <td>@chessBoard.Board[i,k].ContentStr</td>
+            }
+        </tr>
+    }
+</table>
+
+@code {
+
+}

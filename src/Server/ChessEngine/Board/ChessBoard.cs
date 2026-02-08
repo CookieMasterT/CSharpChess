@@ -1,23 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 
 namespace CSharpChess
 {
-    internal static class ChessBoard
+    public static class ChessBoard
     {
-        public static List<Piece> Pieces = new List<Piece> { };
-
-        public static bool IsTileOccupied(BoardSquare Tile)
+        static ChessBoard()
         {
-            foreach (var item in Pieces)
+            Board = new BoardSquare[8, 8];
+            for (int i = 0; i < 8; i++)
             {
-                if (item.Position.Equals(Tile))
+                for (int k = 0; k < 8; k++)
                 {
-                    return true;
+                    Board[i, k] = new BoardSquare(i, k);
                 }
             }
-            return false;
         }
+        public static BoardSquare[,] Board;
+
+        const string TeamWhite = "W";
+        const string TeamBlack = "B";
+        const string EmptySquare = "N";
     }
 }

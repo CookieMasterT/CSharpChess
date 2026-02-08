@@ -2,15 +2,28 @@
 
 namespace CSharpChess
 {
-    public struct BoardSquare() : IEquatable<BoardSquare>
+    public struct BoardSquare : IEquatable<BoardSquare>
     {
-        private int _x = 0; // The current file indexed from 0
-        private int _y = 0; // The current rank indexed from 0
+        private int _x; // The current file indexed from 0
+        private int _y; // The current rank indexed from 0
 
-        public BoardSquare(int x, int y) : this()
+        public Piece? content;
+        public string ContentStr
         {
-            X = x;
-            Y = y;
+            get
+            {
+                if (content != null)
+                {
+                    return content.FullName;
+                }
+                return "N";
+            }
+        }
+
+        public BoardSquare(int x, int y)
+        {
+            _x = x;
+            _y = y;
         }
 
         public int X
