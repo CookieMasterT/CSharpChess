@@ -1,21 +1,30 @@
-﻿using CSharpChess.Constants;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CSharpChess
 {
-    public enum Team { white, black }
-
     public abstract class Piece
     {
-        protected Piece(BoardSquare position, Team team)
+        public Piece(Team team)
         {
             Team = team;
         }
 
-        public string Name { get => ChessNotation.PiecePlaceHolder; }
-        public string FullName { get => $"{Team}:{ChessNotation.PiecePlaceHolder}"; }
+        public virtual string Name { get => ChessNotation.PiecePlaceHolder; }
+        public string FullName
+        {
+            get
+            {
+                string teamName = "";
+                switch (Team)
+                {
+                    case Team.white: teamName = ChessNotation.WhiteTeam; break;
+                    case Team.black: teamName = ChessNotation.BlackTeam; break;
+                }
+                return $"{teamName}:{this.Name}";
+            }
+        }
 
         public readonly Team Team;
 

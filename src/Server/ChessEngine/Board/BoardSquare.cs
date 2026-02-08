@@ -1,6 +1,4 @@
-﻿using CSharpChess.Constants;
-
-namespace CSharpChess
+﻿namespace CSharpChess
 {
     public struct BoardSquare : IEquatable<BoardSquare>
     {
@@ -16,7 +14,7 @@ namespace CSharpChess
                 {
                     return content.FullName;
                 }
-                return "N";
+                return ChessNotation.EmptySquare;
             }
         }
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CSharpChess.Constants
+namespace CSharpChess
 {
     internal class ChessNotation
     {
@@ -19,5 +19,7 @@ namespace CSharpChess.Constants
 
         public const string WhiteTeam = "W";
         public const string BlackTeam = "B";
+
+        public const string EmptySquare = "N";
     }
 }

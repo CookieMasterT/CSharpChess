@@ -19,9 +19,5 @@ namespace CSharpChess
             }
         }
         public static BoardSquare[,] Board;
-
-        const string TeamWhite = "W";
-        const string TeamBlack = "B";
-        const string EmptySquare = "N";
     }
 }

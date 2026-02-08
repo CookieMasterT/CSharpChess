@@ -1,4 +1,5 @@
 ﻿@page "/chessboard"
+@using game = CSharpChess.GameLogic
 @using chessBoard = CSharpChess.ChessBoard;
 <h3>ChessBoard</h3>
 
@@ -8,12 +9,15 @@
         <tr>
             @for (int k = 0; k < 8; k++)
             {
-                <td>@chessBoard.Board[i,k].ContentStr</td>
+                <td id="@k @i">@chessBoard.Board[k,i].ContentStr</td>
             }
         </tr>
     }
 </table>
 
 @code {
-
+    protected override void OnInitialized()
+    {
+        game.SetupBoard();
+    }
 }
