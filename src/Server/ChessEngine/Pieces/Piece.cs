@@ -27,8 +27,10 @@ namespace CSharpChess
             }
         }
 
+        public bool hasMoved = false;
+
         public readonly Team Team;
 
-        abstract public List<BoardSquare> LegalMoves { get; } // list of moves the piece can do
+        abstract public List<BoardSquare> GetLegalMoves(BoardSquare ContainingSquare);
     }
 }
