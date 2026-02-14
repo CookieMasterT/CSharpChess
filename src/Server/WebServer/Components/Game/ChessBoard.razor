@@ -1,7 +1,10 @@
 ﻿@page "/chessboard"
-@using game = CSharpChess.GameLogic
-@using constants = CSharpChess.ChessNotation
-@using chessBoard = CSharpChess.ChessBoard;
+@using Game = CSharpChess.GameLogic
+@using Constants = CSharpChess.ChessNotation
+@using Board = CSharpChess.ChessBoard;
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
 <h3>ChessBoard</h3>
 
 <table>
@@ -15,10 +18,10 @@
                     int x = k - 1;
                     int y = 8 - i;
 
-                    <td class="tile-@(chessBoard.Board[x, y].SquareColor ? "w" : "b")" ">
-                        @if (chessBoard.Board[x, y].ContentImageFileName != "N")
+                    <td class="tile-@(Board.Board[x, y].SquareColor ? "w" : "b")">
+                        @if (Board.Board[x, y].ContentImageFileName != "N")
                         {
-                            <img src="/pieces/@chessBoard.Board[x, y].ContentImageFileName" />
+                            <img id="piece-@x;@y" src="/pieces/@Board.Board[x, y].ContentImageFileName" />
                         }
                     </td>
                 }
@@ -27,13 +30,13 @@
                     <td class="tile-edge">
                         @if (i != 0 && i != 9)
                         {
-                            @constants.LegalRankNames[i - 1]
+                            @Constants.LegalRankNames[i - 1]
                         }
                         else
                         {
                             if (k != 0 && k != 9)
                             {
-                                @constants.LegalFileNames[k - 1]
+                                @Constants.LegalFileNames[k - 1]
                             }
                         }
                     </td>
@@ -44,8 +47,34 @@
 </table>
 
 @code {
+    private IJSObjectReference? module;
+
     protected override void OnInitialized()
     {
-        game.SetupBoard();
+        Game.SetupBoard();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Import the JS module file that lives next to this component
+            module = await JS.InvokeAsync<IJSObjectReference>("import", "./ChessBoard.razor.js");
+            await module.InvokeVoidAsync("main");
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (module is not null)
+        {
+            await module.DisposeAsync();
+        }
+    }
+
+    [JSInvokable]
+    public static void HighLightMoves(int x, int y)
+    {
+        
     }
 }

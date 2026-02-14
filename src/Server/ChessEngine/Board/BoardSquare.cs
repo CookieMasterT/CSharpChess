@@ -1,12 +1,12 @@
 ﻿namespace CSharpChess
 {
-    public struct BoardSquare : IEquatable<BoardSquare>
+    public class BoardSquare : IEquatable<BoardSquare>
     {
         private int _x; // The current file indexed from 0
         private int _y; // The current rank indexed from 0
 
         public Piece? content;
-        public readonly string ContentImageFileName
+        public string ContentImageFileName
         {
             get
             {
@@ -47,10 +47,10 @@
             }
         }
 
-        public readonly char File => ChessNotation.LegalFileNames[_x];
-        public readonly char Rank => ChessNotation.LegalRankNames[_y];
+        public char File => ChessNotation.LegalFileNames[_x];
+        public char Rank => ChessNotation.LegalRankNames[_y];
 
-        public readonly bool SquareColor => (_x % 2 + _y % 2) % 2 == 1; // true means white
+        public bool SquareColor => (_x % 2 + _y % 2) % 2 == 1; // true means white
 
         public bool Equals(BoardSquare other) => this.X == other.X && this.Y == other.Y;
         public override string ToString() => $"{File}{Rank}";
