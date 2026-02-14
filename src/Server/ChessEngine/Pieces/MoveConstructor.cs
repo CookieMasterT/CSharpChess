@@ -49,8 +49,11 @@ namespace CSharpChess.Pieces
             Cant_DangerousToKing = 2 // you can't move beacuse the move would put your king in check 
         }
 
-        public MoveCheckResult TryAdd(int x, int y, bool CapturingMove = true)
+        public MoveCheckResult TryAdd(int x, int y, bool CapturingMove = true, bool MustCapture = false)
         {
+            if (CapturingMove == false && MustCapture == true)
+                throw new InvalidOperationException("A move that must capture cannot be a non-capturing move");
+
             x += _sourceTile.X;
             y += _sourceTile.Y;
             if (!(x is >= 0 and < 8 && y is >= 0 and < 8))
@@ -60,18 +63,18 @@ namespace CSharpChess.Pieces
 
             BoardSquare square = ChessBoard.Board[x, y];
 
-            if (square.content is null)
+            if (square.content is null && !MustCapture)
             {
                 Add(x, y);
                 return MoveCheckResult.Can_VacantTile;
             }
 
-            if (_moveInitiator.Team == square.content.Team)
+            if (!(square.content is null) && _moveInitiator.Team == square.content.Team)
             {
                 return MoveCheckResult.Cant_BlockedByFriend;
             }
 
-            if (CapturingMove)
+            if (CapturingMove && (!MustCapture || !(square.content is null)))
             {
                 Add(x, y);
                 return MoveCheckResult.Can_WillCapture;
