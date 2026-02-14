@@ -1,4 +1,4 @@
 <Solution>
   <Project Path="Server/ChessEngine/ChessEngine.csproj" />
-  <Project Path="Server/WebServer/WebServer.csproj" Id="f8d30e1c-65bb-4b89-95ce-29a2a4664ba5" />
+  <Project Path="Server/WebServer/WebServer.csproj" />
 </Solution>
