@@ -11,7 +11,7 @@ namespace CSharpChess
         {
         }
 
-        public override string[] Name { get => ChessNotation.Bishop; }
+        public override string Name { get => ChessNotation.Bishop; }
 
         public override List<BoardSquare> GetLegalMoves(BoardSquare ContainingSquare)
         {

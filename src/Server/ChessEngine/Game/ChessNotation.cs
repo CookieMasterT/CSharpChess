@@ -9,16 +9,14 @@ namespace CSharpChess
         public static readonly char[] LegalRankNames = ['1', '2', '3', '4', '5', '6', '7', '8'];
         public static readonly char[] LegalFileNames = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
-        // the first value is the notation Text, the second value will be used when fetching the ImageFileName.
+        public static readonly string King = "K";
+        public static readonly string Queen = "Q";
+        public static readonly string Rook = "R";
+        public static readonly string Bishop = "B";
+        public static readonly string Knight = "N";
+        public static readonly string Pawn = "";
 
-        public static readonly string[] King = ["K", "king"];
-        public static readonly string[] Queen = ["Q", "queen"];
-        public static readonly string[] Rook = ["R", "rook"];
-        public static readonly string[] Bishop = ["B", "bishop"];
-        public static readonly string[] Knight = ["N", "knight"];
-        public static readonly string[] Pawn = ["", "pawn"];
-
-        public static readonly string[] PiecePlaceHolder = ["P", "unknown"];
+        public static readonly string PiecePlaceHolder = "P";
 
         public const string WhiteTeam = "w";
         public const string BlackTeam = "b";

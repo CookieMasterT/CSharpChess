@@ -41,7 +41,6 @@ namespace WebServer.HttpConnection
                     }
                 }
 
-                // ✅ Pass body to HandleClient
                 string Response = await Program.HandleClient(requestBody);
                 byte[] buffer = Encoding.UTF8.GetBytes(Response);
 

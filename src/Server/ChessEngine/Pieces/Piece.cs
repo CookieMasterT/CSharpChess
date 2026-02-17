@@ -11,21 +11,7 @@ namespace CSharpChess
             Team = team;
         }
 
-        public virtual string[] Name { get => ChessNotation.PiecePlaceHolder; }
-        public string NotationName { get => this.Name[0]; }
-        public string ImageFileName
-        {
-            get
-            {
-                string teamName = "";
-                switch (Team)
-                {
-                    case Team.white: teamName = ChessNotation.WhiteTeam; break;
-                    case Team.black: teamName = ChessNotation.BlackTeam; break;
-                }
-                return $"{this.Name[1]}-{teamName}.svg";
-            }
-        }
+        public virtual string Name { get => ChessNotation.PiecePlaceHolder; }
 
         public bool hasMoved = false;
 

@@ -6,17 +6,6 @@
         private int _y; // The current rank indexed from 0
 
         public Piece? content;
-        public string ContentImageFileName
-        {
-            get
-            {
-                if (content != null)
-                {
-                    return content.ImageFileName;
-                }
-                return ChessNotation.EmptySquare;
-            }
-        }
 
         public BoardSquare(int x, int y)
         {
