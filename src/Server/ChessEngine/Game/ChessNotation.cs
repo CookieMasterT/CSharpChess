@@ -21,6 +21,6 @@ namespace CSharpChess
         public const string WhiteTeam = "w";
         public const string BlackTeam = "b";
 
-        public const string EmptySquare = "N";
+        public const string EmptySquare = "U";
     }
 }
