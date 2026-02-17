@@ -21,7 +21,7 @@ namespace WebServer.GameDataParsers
                         var str = string.Empty;
                         var tile = CSharpChess.ChessBoard.Board[x, y];
                         str += tile.content?.Team;
-                        str += (tile.content?.Name ?? "N");
+                        str += (tile.content?.Name ?? ChessNotation.EmptySquare);
                         rank.Add(str);
                     }
                     json.Add(ChessNotation.LegalRankNames[x].ToString(), rank);
