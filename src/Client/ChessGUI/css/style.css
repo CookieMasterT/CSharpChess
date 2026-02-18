@@ -84,6 +84,43 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+html {
+  --board-white: #ffce9e;
+  --board-black: #d18b47;
+}
+
+/*
+* Chess board styles
+*/
+
+table {
+  border-collapse: collapse;
+}
+
+.tile-w, .tile-b {
+  width: 50px;
+  height: 50px;
+}
+
+.tile-w img, .tile-b img {
+  width: 50px;
+  height: 50px;
+}
+
+.tile-w {
+  background-color: var(--board-white);
+}
+
+.tile-b {
+  background-color: var(--board-black);
+}
+
+.tile-edge {
+  text-align: center;
+  min-width: 26px;
+}
+
+
 /* ==========================================================================
    Helper classes
    ========================================================================== */
@@ -172,9 +209,9 @@ textarea {
 }
 
 @media print,
-  (-webkit-min-device-pixel-ratio: 1.25),
-  (min-resolution: 1.25dppx),
-  (min-resolution: 120dpi) {
+(-webkit-min-device-pixel-ratio: 1.25),
+(min-resolution: 1.25dppx),
+(min-resolution: 120dpi) {
   /* Style adjustments for high resolution devices */
 }
 
