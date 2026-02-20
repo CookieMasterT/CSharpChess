@@ -26,8 +26,8 @@ namespace CSharpChess.Pieces
         {
             if (deltaX == 0 && deltaY == 0) throw new InvalidOperationException($"You cannot create a line without a direction");
 
-            var x = _sourceTile.X + deltaX;
-            var y = _sourceTile.Y + deltaY;
+            var x = deltaX;
+            var y = deltaY;
             while (TryAdd(x,y) == MoveCheckResult.Can_VacantTile)
             {
                 x += deltaX;
