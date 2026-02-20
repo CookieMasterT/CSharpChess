@@ -26,10 +26,11 @@ namespace CSharpChess
                 return false;
             if (start.content.GetLegalMoves(start).Contains(end))
             {
+                start.content.hasMoved = true;
                 end.content = start.content;
                 start.content = null;
                 return true;
-            }    
+            }
             return false;
         }
         public static bool MovePiece(int start_x, int start_y, int end_x, int end_y)

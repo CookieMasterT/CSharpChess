@@ -19,10 +19,10 @@ namespace CSharpChess
             int direction = (this.Team == Team.white) ? 1 : -1; // Black pawns move down the y axis (-1) instead of up the y axis (+1)
 
             // move forward
-            MV.TryAdd(0, direction, CapturingMove: false);
+            bool FirstMoveWorks = MV.TryAdd(0, direction, CapturingMove: false) == MoveConstructor.MoveCheckResult.Can_VacantTile;
 
             // if the pawn hasn't moved yet, they can move 2 forward
-            if (!hasMoved)
+            if (FirstMoveWorks && !hasMoved)
                 MV.TryAdd(0, 2 * direction, CapturingMove: false);
 
             // capture on diagonals in front of pawn
