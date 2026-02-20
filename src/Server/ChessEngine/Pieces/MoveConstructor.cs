@@ -57,9 +57,7 @@ namespace CSharpChess.Pieces
             x += _sourceTile.X;
             y += _sourceTile.Y;
             if (!(x is >= 0 and < 8 && y is >= 0 and < 8))
-            {
                 return MoveCheckResult.Cant_OutOfBounds;
-            }
 
             BoardSquare square = ChessBoard.Board[x, y];
 
@@ -70,9 +68,7 @@ namespace CSharpChess.Pieces
             }
 
             if (!(square.content is null) && _moveInitiator.Team == square.content.Team)
-            {
                 return MoveCheckResult.Cant_BlockedByFriend;
-            }
 
             if (CapturingMove && (!MustCapture || !(square.content is null)))
             {

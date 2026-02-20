@@ -8,34 +8,32 @@ namespace WebServer.GameDataParsers
 {
     internal static class ChessBoard
     {
-        public static string json { 
-            get 
+        public static string GetJson()
+        {
+            var json = new JArray();
+            for (int x = 0; x < 8; x++)
             {
-                var json = new JArray();
-                for (int x = 0; x < 8; x++)
+                // todo: ensure that this is actually a rank
+                var rank = new JArray();
+                for (int y = 0; y < 8; y++)
                 {
-                    // todo: ensure that this is actually a rank
-                    var rank = new JArray();
-                    for (int y = 0; y < 8; y++)
+                    var str = string.Empty;
+                    var tile = CSharpChess.ChessBoard.Board[x, y];
+                    switch (tile.content?.Team)
                     {
-                        var str = string.Empty;
-                        var tile = CSharpChess.ChessBoard.Board[x, y];
-                        switch (tile.content?.Team)
-                        {
-                            case CSharpChess.Team.white:
-                                str += ChessNotation.WhiteTeam;
-                                break;
-                            case CSharpChess.Team.black:
-                                str += ChessNotation.BlackTeam;
-                                break;
-                        }
-                        str += (tile.content?.Name ?? ChessNotation.EmptySquare);
-                        rank.Add(str);
+                        case CSharpChess.Team.white:
+                            str += ChessNotation.WhiteTeam;
+                            break;
+                        case CSharpChess.Team.black:
+                            str += ChessNotation.BlackTeam;
+                            break;
                     }
-                    json.Add(rank);
+                    str += (tile.content?.Name ?? ChessNotation.EmptySquare);
+                    rank.Add(str);
                 }
-                return json.ToString();
-            } 
+                json.Add(rank);
+            }
+            return json.ToString();
         }
     }
 }

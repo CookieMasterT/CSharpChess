@@ -36,10 +36,8 @@ namespace CSharpChess
         {
             foreach (var coord in new int[4] { start_x, start_y, end_x, end_y })
             {
-                if (!(start_x is >= 0 and < 8))
-                {
+                if (!(coord is >= 0 and < 8))
                     return false;
-                }
             }
             return MovePiece(ChessBoard.Board[start_x, start_y], ChessBoard.Board[end_x, end_y]);
         }

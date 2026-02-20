@@ -1,8 +1,8 @@
 const connectionString = "http://localhost:54321/";
-const supportedInfos = ["boardState"];
+const supportedRequests = ["boardState", "pieceMoves", "movePiece"];
 
-async function RequestInfo(type) {
-  if (supportedInfos.includes(type)) {
+async function SendRequest(type, extraInfo = "") {
+  if (supportedRequests.includes(type)) {
     let response;
 
     response = await fetch(
@@ -11,7 +11,7 @@ async function RequestInfo(type) {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         signal: AbortSignal.timeout(5000),
-        body: JSON.stringify({infoRequest: type})
+        body: JSON.stringify({requestType: type, extraInfo: extraInfo}),
       }
     );
 
@@ -20,6 +20,8 @@ async function RequestInfo(type) {
     }
 
     return await response.json();
+  } else {
+    console.log(`The type '${type}' is not in supportedInfos`);
   }
 }
 
@@ -30,10 +32,17 @@ async function Init() {
 const FileNames = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const RankNames = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
-const ImageFileNameDict = {"K": "king", "Q": "queen", "R": "rook", "B": "bishop", "N": "knight", "P":"pawn"}
+const ImageFileNameDict = {"K": "king", "Q": "queen", "R": "rook", "B": "bishop", "N": "knight", "P": "pawn"}
+
+let TempListeners = []
 
 async function InitChessBoard() {
-  let request = await RequestInfo("boardState")
+  let request = await SendRequest("boardState")
+  BuildChessBoard(request);
+  AddPieceInteractivity()
+}
+
+function BuildChessBoard(board_array) {
   let board = document.getElementById("ChessBoard")
   let html = "";
 
@@ -44,9 +53,11 @@ async function InitChessBoard() {
       if (k !== 0 && i !== 0 && i !== 9 && k !== 9) {
         let x = k - 1;
         let y = i - 1;
-        html += `<td class=\"tile-${(x % 2 + y % 2) % 2 === 1 ? "w" : "b"}">`
+        html += `<td
+                  class=\"tile-${(x % 2 + y % 2) % 2 === 1 ? "w" : "b"}"
+                  id="tile-${x};${y}">`
 
-        let tile = request[x][y]
+        let tile = board_array[x][y]
         if (tile !== "U") {
           let color = tile[0]
           let type;
@@ -55,7 +66,11 @@ async function InitChessBoard() {
           else
             type = tile[1]
 
-          html += `<img id="piece-${x};${y}" src="img/${ImageFileNameDict[type]}-${color}.svg" alt="${tile}"/>`;
+          html += `<img
+                    class="piece"
+                    draggable="false"
+                    id="piece-${x};${y}"
+                    src="img/${ImageFileNameDict[type]}-${color}.svg" alt="${tile}"/>`;
         }
         html += `</td>`
       } else {
@@ -75,6 +90,48 @@ async function InitChessBoard() {
   html += `</table>`
 
   board.innerHTML = html;
+}
+
+function AddPieceInteractivity() {
+  let Pieces = document.querySelectorAll('.piece');
+  for (let piece of Pieces) {
+    piece.addEventListener('mousedown', (e) => {
+      HandlePieceTouch(e).then()
+    })
+  }
+}
+
+async function HandlePieceTouch(event) {
+  let PieceId = event.target.id;
+  let [PieceX, PieceY] = PieceId.slice(-3).split(';');
+
+  document.querySelectorAll(".MoveHintHighlight").forEach((item) => {
+    item.classList.remove("MoveHintHighlight");
+    item.removeEventListener('click', DoMove)
+  })
+
+  while (TempListeners.length > 0) {
+    let [Element, Func] = TempListeners.pop()
+    Element.removeEventListener('click', Func)
+  }
+
+  let request = await SendRequest("pieceMoves", `{"x": ${PieceX}, "y": ${PieceY}}`);
+  request.forEach((tile) => {
+    let [tileX, tileY] = tile;
+    let tileElement = document.getElementById(`tile-${tileX};${tileY}`);
+    tileElement.classList.add("MoveHintHighlight");
+    let func = () => {DoMove(PieceX, PieceY, tileX, tileY)}
+    tileElement.addEventListener('click', func)
+    TempListeners.push([tileElement, func])
+  })
+}
+
+async function DoMove(pieceX, pieceY, tileX, tileY) {
+  console.log(pieceX, pieceY, tileX, tileY)
+  await SendRequest("movePiece", `{"startX": ${pieceX}, "startY": ${pieceY},
+                                                "endX": ${tileX}, "endY": ${tileY}}`);
+  // TEMPORARY SOLUTION
+  await InitChessBoard()
 }
 
 Init().then();

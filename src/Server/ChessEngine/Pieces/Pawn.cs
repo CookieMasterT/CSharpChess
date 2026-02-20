@@ -23,7 +23,7 @@ namespace CSharpChess
 
             // if the pawn hasn't moved yet, they can move 2 forward
             if (!hasMoved)
-                MV.TryAdd(1, 2 * direction, CapturingMove: false);
+                MV.TryAdd(0, 2 * direction, CapturingMove: false);
 
             // capture on diagonals in front of pawn
             MV.TryAdd(1, direction, MustCapture: true);
