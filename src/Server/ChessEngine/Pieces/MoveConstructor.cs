@@ -37,16 +37,16 @@ namespace CSharpChess.Pieces
 
         public enum MoveCheckResult
         {
-            Can_VacantTile = 0, // you can move onto the tile, the tile is empty
-            Can_WillCapture = 0, // you can move onto the tile, this move will capture an enemy piece
+            Can_VacantTile = 01, // you can move onto the tile, the tile is empty
+            Can_WillCapture = 02, // you can move onto the tile, this move will capture an enemy piece
 
-            Cant_NonCapturing = 1, // you can't move onto the tile, blocked by enemy and you can't capture like this
-            Cant_OutOfBounds = 1, // you can't move onto the tile, the move would land you outside the board
-            Cant_BlockedByFriend = 1, // you can't move onto the tile, occupied by a piece that is on the same team
+            Cant_NonCapturing = 11, // you can't move onto the tile, blocked by enemy and you can't capture like this
+            Cant_OutOfBounds = 12, // you can't move onto the tile, the move would land you outside the board
+            Cant_BlockedByFriend = 13, // you can't move onto the tile, occupied by a piece that is on the same team
 
             // todo: implement
-            Cant_KingInDanger = 2, // you can't move beacuse your king is in check, and this move does not help with that
-            Cant_DangerousToKing = 2 // you can't move beacuse the move would put your king in check 
+            Cant_KingInDanger = 21, // you can't move beacuse your king is in check, and this move does not help with that
+            Cant_DangerousToKing = 22 // you can't move beacuse the move would put your king in check 
         }
 
         public MoveCheckResult TryAdd(int x, int y, bool CapturingMove = true, bool MustCapture = false)
