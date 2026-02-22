@@ -14,8 +14,8 @@ namespace WebServer.GameDataParsers
             var json = new JArray();
             BoardSquare? tile = CSharpChess.ChessBoard.Board[position.x, position.y];
             Piece? piece = tile?.content;
-            if (piece is null || tile is null)
-                return "";
+            if (piece is null || tile is null || piece.Team != GameLogic.CurrentTurnTeam)
+                return "{}";
             foreach (var item in piece.GetLegalMoves(tile))
             {
                 json.Add(new JArray(new int[] {item.X, item.Y}));

@@ -4,11 +4,11 @@ using System.Text;
 
 namespace CSharpChess
 {
-    public enum Team { white, black }
+    public enum Team { White, Black }
 
     public static class GameLogic
     {
-        public static Team CurrentTurn;
+        public static Team CurrentTurnTeam;
 
         public static void SwapSquareStruct(ref BoardSquare originalSquare, Piece? newContent)
         {
@@ -37,18 +37,18 @@ namespace CSharpChess
             for (int x = 0; x < 8; x++)
             {
                 // white pieces
-                SwapSquareStruct(ref ChessBoard.Board[x, 0], GetStartRowPiece(x, Team.white));
+                SwapSquareStruct(ref ChessBoard.Board[x, 0], GetStartRowPiece(x, Team.White));
 
                 // white pawns
-                SwapSquareStruct(ref ChessBoard.Board[x, 1], new Pawn(Team.white));
+                SwapSquareStruct(ref ChessBoard.Board[x, 1], new Pawn(Team.White));
 
                 // black pawns
-                SwapSquareStruct(ref ChessBoard.Board[x, 6], new Pawn(Team.black));
+                SwapSquareStruct(ref ChessBoard.Board[x, 6], new Pawn(Team.Black));
 
                 // black pieces
-                SwapSquareStruct(ref ChessBoard.Board[x, 7], GetStartRowPiece(x, Team.black));
+                SwapSquareStruct(ref ChessBoard.Board[x, 7], GetStartRowPiece(x, Team.Black));
             }
-            CurrentTurn = Team.white;
+            CurrentTurnTeam = Team.White;
         }
     }
 }

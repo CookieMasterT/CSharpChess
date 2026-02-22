@@ -22,22 +22,31 @@ namespace WebServer
                 case "boardState":
                     json = GDP.ChessBoard.GetJson();
                     break;
-
-                // todo: refactor this to not be duplicated code
                 case "pieceMoves":
-                    var position = JsonConvert.DeserializeObject<CoordinateInfo>(requestObj.extraInfo ?? "");
-                    if (position is null)
-                        break;
-                    json = GDP.PieceMoves.GetJson(position);
+                    DeserializeInfo<CoordinateInfo>(requestObj.extraInfo, position =>
+                    {
+                        json = GDP.PieceMoves.GetJson(position);
+                    });
                     break;
                 case "movePiece":
-                    var moveInfo = JsonConvert.DeserializeObject<MovePieceParams>(requestObj.extraInfo ?? "");
-                    if (moveInfo is null)
-                        break;
-                    GA.MovePiece.Execute(moveInfo);
+                    DeserializeInfo<MovePieceParams>(requestObj.extraInfo, moveInfo =>
+                    {
+                        GA.MovePiece.Execute(moveInfo);
+                    });
+                    break;
+                case "currentTeam":
+                    json = GDP.CurrentTeam.GetJson();
                     break;
             }
             return json;
+        }
+        private static void DeserializeInfo<T>(string? extraInfo, Action<T> action)
+        {
+            var data = JsonConvert.DeserializeObject<T>(extraInfo ?? "");
+            if (data is null)
+                return;
+
+            action(data);
         }
     }
 }

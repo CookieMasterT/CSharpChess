@@ -1,5 +1,5 @@
 const connectionString = "http://localhost:54321/";
-const supportedRequests = ["boardState", "pieceMoves", "movePiece"];
+const supportedRequests = ["boardState", "pieceMoves", "movePiece", "currentTeam"];
 
 async function SendRequest(type, extraInfo = "") {
   if (supportedRequests.includes(type)) {
@@ -37,9 +37,12 @@ const ImageFileNameDict = {"K": "king", "Q": "queen", "R": "rook", "B": "bishop"
 let TempListeners = []
 
 async function InitChessBoard() {
-  let request = await SendRequest("boardState")
-  BuildChessBoard(request);
-  AddPieceInteractivity()
+  let board = await SendRequest("boardState")
+  BuildChessBoard(board);
+
+  let team = await SendRequest("currentTeam");
+  document.getElementById("title").innerHTML = `It is currently: ${team["team"]}'s turn`;
+  AddPieceInteractivity(team)
 }
 
 function BuildChessBoard(board_array) {
@@ -67,7 +70,7 @@ function BuildChessBoard(board_array) {
             type = tile[1]
 
           html += `<img
-                    class="piece"
+                    class="piece ${color === 'w' ? 'White' : 'Black'}"
                     draggable="false"
                     id="piece-${x};${y}"
                     src="img/${ImageFileNameDict[type]}-${color}.svg" alt="${tile}"/>`;
@@ -92,8 +95,8 @@ function BuildChessBoard(board_array) {
   board.innerHTML = html;
 }
 
-function AddPieceInteractivity() {
-  let Pieces = document.querySelectorAll('.piece');
+function AddPieceInteractivity(team) {
+  let Pieces = document.querySelectorAll(`.piece.${team["team"]}`);
   for (let piece of Pieces) {
     piece.addEventListener('mousedown', (e) => {
       HandlePieceTouch(e).then()

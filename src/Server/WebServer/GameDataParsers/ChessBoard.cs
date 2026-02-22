@@ -21,10 +21,10 @@ namespace WebServer.GameDataParsers
                     var tile = CSharpChess.ChessBoard.Board[x, y];
                     switch (tile.content?.Team)
                     {
-                        case CSharpChess.Team.white:
+                        case CSharpChess.Team.White:
                             str += ChessNotation.WhiteTeam;
                             break;
-                        case CSharpChess.Team.black:
+                        case CSharpChess.Team.Black:
                             str += ChessNotation.BlackTeam;
                             break;
                     }

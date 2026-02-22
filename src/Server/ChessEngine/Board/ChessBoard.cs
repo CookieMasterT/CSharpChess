@@ -24,11 +24,15 @@ namespace CSharpChess
         {
             if (start.content is null)
                 return false;
-            if (start.content.GetLegalMoves(start).Contains(end))
+            if (start.content.GetLegalMoves(start).Contains(end) && start.content.Team == GameLogic.CurrentTurnTeam)
             {
                 start.content.hasMoved = true;
+
+                GameLogic.CurrentTurnTeam = GameLogic.CurrentTurnTeam == Team.White ? Team.Black : Team.White;
+
                 end.content = start.content;
                 start.content = null;
+
                 return true;
             }
             return false;

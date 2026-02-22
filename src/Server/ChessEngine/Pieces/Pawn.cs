@@ -16,7 +16,7 @@ namespace CSharpChess
         public override List<BoardSquare> GetLegalMoves(BoardSquare ContainingSquare)
         {
             var MV = MoveConstructor.GetMoveConstructor(this, ContainingSquare);
-            int direction = (this.Team == Team.white) ? 1 : -1; // Black pawns move down the y axis (-1) instead of up the y axis (+1)
+            int direction = (this.Team == Team.White) ? 1 : -1; // Black pawns move down the y axis (-1) instead of up the y axis (+1)
 
             // move forward
             bool FirstMoveWorks = MV.TryAdd(0, direction, CapturingMove: false) == MoveConstructor.MoveCheckResult.Can_VacantTile;
