@@ -10,8 +10,23 @@ namespace WebServer
     {
         static async Task Main(string[] args)
         {
+            Console.WriteLine("Press R to reset the board.");
+            Console.WriteLine("Press Esc to exit.");
             GameLogic.SetupBoard();
-            await HttpConnection.HttpConnection.StartConnection("http://localhost:54321/");
+
+            Task con = HttpConnection.HttpConnection.StartConnection("http://localhost:54321/");
+            while (true)
+            {
+                var key = Console.ReadKey();
+                if (key.Key == ConsoleKey.R)
+                {
+                    GameLogic.SetupBoard();
+                }
+                else if (key.Key == ConsoleKey.Escape)
+                {
+                    break;
+                }
+            }
         }
         public static async Task<string> HandleClient(string requestStr)
         {
