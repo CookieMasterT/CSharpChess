@@ -1,54 +1,83 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Net;
+using System.Net.WebSockets;
+using System.Text;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace WebServer.HttpConnection
 {
-    public static class HttpConnection
+    public static class Listener
     {
-        public static async Task StartConnection(string port)
+        static WebSocketContext? wsContext;
+        static WebSocket? webSocket;
+
+        public static async Task StartConnection(string uri)
         {
             var listener = new HttpListener();
-            listener.Prefixes.Add(port);
+            listener.Prefixes.Add(uri);
             listener.Start();
 
-            Console.WriteLine($"Listening on {port}");
+            Console.WriteLine($"Listening on {uri}");
 
             while (true)
             {
                 var context = await listener.GetContextAsync();
-                var response = context.Response;
 
-                response.Headers.Add("Access-Control-Allow-Origin", "*");
-                response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-                response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
-
-                if (context.Request.HttpMethod == "OPTIONS")
+                if (!context.Request.IsWebSocketRequest)
                 {
-                    response.StatusCode = 200;
-                    response.Close();
+                    context.Response.StatusCode = 400;
+                    context.Response.Close();
                     continue;
                 }
 
-                string requestBody = "";
+                _ = HandleWebSocketConnection(context);
+            }
+        }
 
-                if (context.Request.HasEntityBody)
+        private static async Task HandleWebSocketConnection(HttpListenerContext context)
+        {
+            wsContext = await context.AcceptWebSocketAsync(null);
+            webSocket = wsContext.WebSocket;
+
+            Console.WriteLine("WebSocket connection established.");
+
+            var buffer = new byte[4096];
+
+            while (webSocket.State == WebSocketState.Open)
+            {
+                var result = await webSocket.ReceiveAsync(
+                    new ArraySegment<byte>(buffer),
+                    CancellationToken.None);
+
+                if (result.MessageType == WebSocketMessageType.Close)
                 {
-                    using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
-                    {
-                        requestBody = await reader.ReadToEndAsync();
-                    }
+                    await webSocket.CloseAsync(
+                        WebSocketCloseStatus.NormalClosure,
+                        "Closing",
+                        CancellationToken.None);
+                    break;
                 }
 
+                var requestBody = Encoding.UTF8.GetString(buffer, 0, result.Count);
+
                 string Response = await Program.HandleClient(requestBody);
-                byte[] buffer = Encoding.UTF8.GetBytes(Response);
 
-                response.ContentType = "application/json";
-                response.ContentLength64 = buffer.Length;
-                await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                SendMessage(Response);
+            }
+        }
 
-                response.Close();
+        public static async Task SendMessage(string message)
+        {
+            if (webSocket != null && webSocket.State == WebSocketState.Open && message != String.Empty)
+            {
+                var buffer = Encoding.UTF8.GetBytes(message);
+                await webSocket.SendAsync(
+                    new ArraySegment<byte>(buffer),
+                    WebSocketMessageType.Text,
+                    true,
+                    CancellationToken.None);
             }
         }
     }

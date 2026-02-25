@@ -1,31 +1,47 @@
-const connectionString = "http://localhost:54321/";
+const url = "ws://localhost:54321/";
+let connection;
 const supportedRequests = ["boardState", "pieceMoves", "movePiece", "currentTeam"];
 
-async function SendRequest(type, extraInfo = "") {
+async function SendData(type, extraInfo = "") {
   if (supportedRequests.includes(type)) {
-    let response;
-
-    response = await fetch(
-      connectionString,
-      {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        signal: AbortSignal.timeout(5000),
-        body: JSON.stringify({requestType: type, extraInfo: extraInfo}),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Server responded with status: ${response.status}`);
-    }
-
-    return await response.json();
+    let request = JSON.stringify({requestType: type, extraInfo: extraInfo})
+    connection.send(request);
   } else {
     console.log(`The type '${type}' is not in supportedInfos`);
   }
 }
 
+async function WaitForInfo(type, extraInfo = "") {
+  let Task = new Promise(resolve => {
+    connection.addEventListener("message",
+      (e) => resolve(e.data)
+      , {once: true})
+  });
+  await SendData(type, extraInfo);
+  return JSON.parse(await Task)
+}
+
+async function CommandHandler(eventText) {
+  switch (eventText) {
+    case "refreshBoard":
+      await InitChessBoard()
+  }
+}
+
+async function SetUpConnection() {
+  connection = new WebSocket(url);
+  let Task = new Promise(resolve => {
+    connection.addEventListener("open", resolve, {once: true})
+  });
+  await Task
+
+  connection.addEventListener("message", (event) => {
+    CommandHandler(event.data);
+  })
+}
+
 async function Init() {
+  await SetUpConnection()
   await InitChessBoard();
 }
 
@@ -37,15 +53,16 @@ const ImageFileNameDict = {"K": "king", "Q": "queen", "R": "rook", "B": "bishop"
 let TempListeners = []
 
 async function InitChessBoard() {
-  let board = await SendRequest("boardState")
+  let board = await WaitForInfo("boardState")
   BuildChessBoard(board);
 
-  let team = await SendRequest("currentTeam");
+  let team = await WaitForInfo("currentTeam");
   document.getElementById("title").innerHTML = `It is currently: ${team["team"]}'s turn`;
   AddPieceInteractivity(team)
 }
 
 function BuildChessBoard(board_array) {
+  console.log(board_array);
   let board = document.getElementById("ChessBoard")
   let html = "";
 
@@ -118,12 +135,14 @@ async function HandlePieceTouch(event) {
     Element.removeEventListener('click', Func)
   }
 
-  let request = await SendRequest("pieceMoves", `{"x": ${PieceX}, "y": ${PieceY}}`);
+  let request = await WaitForInfo("pieceMoves", `{"x": ${PieceX}, "y": ${PieceY}}`);
   request.forEach((tile) => {
     let [tileX, tileY] = tile;
     let tileElement = document.getElementById(`tile-${tileX};${tileY}`);
     tileElement.classList.add("MoveHintHighlight");
-    let func = () => {DoMove(PieceX, PieceY, tileX, tileY)}
+    let func = () => {
+      DoMove(PieceX, PieceY, tileX, tileY)
+    }
     tileElement.addEventListener('click', func)
     TempListeners.push([tileElement, func])
   })
@@ -131,7 +150,7 @@ async function HandlePieceTouch(event) {
 
 async function DoMove(pieceX, pieceY, tileX, tileY) {
   console.log(pieceX, pieceY, tileX, tileY)
-  await SendRequest("movePiece", `{"startX": ${pieceX}, "startY": ${pieceY},
+  await SendData("movePiece", `{"startX": ${pieceX}, "startY": ${pieceY},
                                                 "endX": ${tileX}, "endY": ${tileY}}`);
   // TEMPORARY SOLUTION
   await InitChessBoard()

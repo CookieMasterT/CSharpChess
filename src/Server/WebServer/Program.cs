@@ -14,13 +14,14 @@ namespace WebServer
             Console.WriteLine("Press Esc to exit.");
             GameLogic.SetupBoard();
 
-            Task con = HttpConnection.HttpConnection.StartConnection("http://localhost:54321/");
+            _ = HttpConnection.Listener.StartConnection("http://localhost:54321/");
             while (true)
             {
                 var key = Console.ReadKey();
                 if (key.Key == ConsoleKey.R)
                 {
                     GameLogic.SetupBoard();
+                    await HttpConnection.Listener.SendMessage("refreshBoard");
                 }
                 else if (key.Key == ConsoleKey.Escape)
                 {
@@ -31,7 +32,7 @@ namespace WebServer
         public static async Task<string> HandleClient(string requestStr)
         {
             var requestObj = JsonConvert.DeserializeObject<InitialInfoRequest>(requestStr);
-            string json = "{}";
+            string json = String.Empty;
             switch (requestObj?.requestType)
             {
                 case "boardState":
