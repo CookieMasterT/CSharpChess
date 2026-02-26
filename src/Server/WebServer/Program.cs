@@ -21,7 +21,7 @@ namespace WebServer
                 if (key.Key == ConsoleKey.R)
                 {
                     GameLogic.SetupBoard();
-                    await HttpConnection.Listener.SendMessage("refreshBoard");
+                    await HttpConnection.Listener.SendMessageAll("refreshBoard");
                 }
                 else if (key.Key == ConsoleKey.Escape)
                 {
@@ -49,6 +49,7 @@ namespace WebServer
                     {
                         GA.MovePiece.Execute(moveInfo);
                     });
+                    await HttpConnection.Listener.SendMessageAll("refreshBoard");
                     break;
                 case "currentTeam":
                     json = GDP.CurrentTeam.GetJson();

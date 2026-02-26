@@ -152,8 +152,6 @@ async function DoMove(pieceX, pieceY, tileX, tileY) {
   console.log(pieceX, pieceY, tileX, tileY)
   await SendData("movePiece", `{"startX": ${pieceX}, "startY": ${pieceY},
                                                 "endX": ${tileX}, "endY": ${tileY}}`);
-  // TEMPORARY SOLUTION
-  await InitChessBoard()
 }
 
 Init().then();

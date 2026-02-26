@@ -10,8 +10,7 @@ namespace WebServer.HttpConnection
 {
     public static class Listener
     {
-        static WebSocketContext? wsContext;
-        static WebSocket? webSocket;
+        static List<WebSocket> webSocketsList = new List<WebSocket>();
 
         public static async Task StartConnection(string uri)
         {
@@ -38,8 +37,10 @@ namespace WebServer.HttpConnection
 
         private static async Task HandleWebSocketConnection(HttpListenerContext context)
         {
-            wsContext = await context.AcceptWebSocketAsync(null);
-            webSocket = wsContext.WebSocket;
+            var wsContext = await context.AcceptWebSocketAsync(null);
+            var webSocket = wsContext.WebSocket;
+
+            webSocketsList.Add(webSocket);
 
             Console.WriteLine("WebSocket connection established.");
 
@@ -57,6 +58,7 @@ namespace WebServer.HttpConnection
                         WebSocketCloseStatus.NormalClosure,
                         "Closing",
                         CancellationToken.None);
+                    webSocketsList.Remove(webSocket);
                     break;
                 }
 
@@ -64,11 +66,19 @@ namespace WebServer.HttpConnection
 
                 string Response = await Program.HandleClient(requestBody);
 
-                SendMessage(Response);
+                await SendMessage(Response, webSocket);
             }
         }
 
-        public static async Task SendMessage(string message)
+        public static async Task SendMessageAll(string message)
+        {
+            foreach (var webSocket in webSocketsList)
+            {
+                await SendMessage(message, webSocket);
+            }
+        }
+
+        public static async Task SendMessage(string message, WebSocket webSocket)
         {
             if (webSocket != null && webSocket.State == WebSocketState.Open && message != String.Empty)
             {
