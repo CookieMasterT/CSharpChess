@@ -14,14 +14,14 @@ namespace WebServer
             Console.WriteLine("Press Esc to exit.");
             GameLogic.SetupBoard();
 
-            _ = HttpConnection.Listener.StartConnection("http://localhost:54321/");
+            _ = HttpService.Connection.StartConnection("http://localhost:54321/");
             while (true)
             {
                 var key = Console.ReadKey();
                 if (key.Key == ConsoleKey.R)
                 {
                     GameLogic.SetupBoard();
-                    await HttpConnection.Listener.SendMessageAll("refreshBoard");
+                    await HttpService.Connection.SendMessageAll("refreshBoard");
                 }
                 else if (key.Key == ConsoleKey.Escape)
                 {
@@ -49,7 +49,7 @@ namespace WebServer
                     {
                         GA.MovePiece.Execute(moveInfo);
                     });
-                    await HttpConnection.Listener.SendMessageAll("refreshBoard");
+                    await HttpService.Connection.SendMessageAll("refreshBoard");
                     break;
                 case "currentTeam":
                     json = GDP.CurrentTeam.GetJson();

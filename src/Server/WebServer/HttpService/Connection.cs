@@ -6,9 +6,9 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WebServer.HttpConnection
+namespace WebServer.HttpService
 {
-    public static class Listener
+    public static class Connection
     {
         static List<WebSocket> webSocketsList = new List<WebSocket>();
 
