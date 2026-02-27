@@ -10,8 +10,6 @@ namespace WebServer.HttpService
 {
     public static class Connection
     {
-        static List<WebSocket> webSocketsList = new List<WebSocket>();
-
         public static async Task StartConnection(string uri)
         {
             var listener = new HttpListener();
@@ -40,7 +38,7 @@ namespace WebServer.HttpService
             var wsContext = await context.AcceptWebSocketAsync(null);
             var webSocket = wsContext.WebSocket;
 
-            webSocketsList.Add(webSocket);
+            ClientManager.buffer.Add(webSocket);
 
             Console.WriteLine("WebSocket connection established.");
 
@@ -58,36 +56,15 @@ namespace WebServer.HttpService
                         WebSocketCloseStatus.NormalClosure,
                         "Closing",
                         CancellationToken.None);
-                    webSocketsList.Remove(webSocket);
+                    ClientManager.UnAssignWebsocket(webSocket);
                     break;
                 }
 
                 var requestBody = Encoding.UTF8.GetString(buffer, 0, result.Count);
 
-                string Response = await Program.HandleClient(requestBody);
+                string Response = await Program.HandleClient(requestBody, webSocket);
 
-                await SendMessage(Response, webSocket);
-            }
-        }
-
-        public static async Task SendMessageAll(string message)
-        {
-            foreach (var webSocket in webSocketsList)
-            {
-                await SendMessage(message, webSocket);
-            }
-        }
-
-        public static async Task SendMessage(string message, WebSocket webSocket)
-        {
-            if (webSocket != null && webSocket.State == WebSocketState.Open && message != String.Empty)
-            {
-                var buffer = Encoding.UTF8.GetBytes(message);
-                await webSocket.SendAsync(
-                    new ArraySegment<byte>(buffer),
-                    WebSocketMessageType.Text,
-                    true,
-                    CancellationToken.None);
+                await ClientManager.SendMessage(Response, webSocket);
             }
         }
     }

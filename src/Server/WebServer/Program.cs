@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using WebServer.RequestTypes;
 using GDP = WebServer.GameDataParsers;
 using GA = WebServer.GameActions;
+using WebServer.HttpService;
+using System.Net.WebSockets;
 
 namespace WebServer
 {
@@ -21,7 +23,7 @@ namespace WebServer
                 if (key.Key == ConsoleKey.R)
                 {
                     GameLogic.SetupBoard();
-                    await HttpService.Connection.SendMessageAll("refreshBoard");
+                    await ClientManager.SendMessageAll("refreshBoard");
                 }
                 else if (key.Key == ConsoleKey.Escape)
                 {
@@ -29,12 +31,17 @@ namespace WebServer
                 }
             }
         }
-        public static async Task<string> HandleClient(string requestStr)
+        public static async Task<string> HandleClient(string requestStr, WebSocket ws)
         {
             var requestObj = JsonConvert.DeserializeObject<InitialInfoRequest>(requestStr);
             string json = String.Empty;
             switch (requestObj?.requestType)
             {
+                case "identification":
+                    var id = ClientManager.IdentifyWebsocket(ws, requestObj.extraInfo ?? "NoID");
+                    if (id != string.Empty)
+                        json = GDP.Identification.GetJson(id);
+                    break;
                 case "boardState":
                     json = GDP.ChessBoard.GetJson();
                     break;
@@ -49,7 +56,7 @@ namespace WebServer
                     {
                         GA.MovePiece.Execute(moveInfo);
                     });
-                    await HttpService.Connection.SendMessageAll("refreshBoard");
+                    await ClientManager.SendMessageAll("refreshBoard");
                     break;
                 case "currentTeam":
                     json = GDP.CurrentTeam.GetJson();

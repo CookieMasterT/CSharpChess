@@ -1,6 +1,6 @@
 const url = "ws://localhost:54321/";
 let connection;
-const supportedRequests = ["boardState", "pieceMoves", "movePiece", "currentTeam"];
+const supportedRequests = ["identification", "boardState", "pieceMoves", "movePiece", "currentTeam"];
 
 async function SendData(type, extraInfo = "") {
   if (supportedRequests.includes(type)) {
@@ -18,7 +18,9 @@ async function WaitForInfo(type, extraInfo = "") {
       , {once: true})
   });
   await SendData(type, extraInfo);
-  return JSON.parse(await Task)
+  let returnedInfo;
+  returnedInfo = await Task;
+  return JSON.parse(returnedInfo)
 }
 
 async function CommandHandler(eventText) {
@@ -34,6 +36,15 @@ async function SetUpConnection() {
     connection.addEventListener("open", resolve, {once: true})
   });
   await Task
+
+  let sessionId = (await cookieStore.get("sessionIdentifier"))
+  if (!sessionId) {
+    let newId;
+    newId = (await WaitForInfo("identification", "NoID"))["Id"];
+    await cookieStore.set({name: "sessionIdentifier", value: newId, path: "/"});
+  } else {
+    await SendData(sessionId);
+  }
 
   connection.addEventListener("message", (event) => {
     CommandHandler(event.data);
