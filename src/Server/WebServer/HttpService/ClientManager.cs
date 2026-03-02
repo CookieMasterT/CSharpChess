@@ -12,23 +12,20 @@ namespace WebServer.HttpService
 
         public static string IdentifyWebsocket(WebSocket ws, string id = "NoID")
         {
-            if (id == "NoID")
-            {
-                var newClient = new ClientInstance(ws);
-                clients.Add(newClient);
-                return newClient.Id;
-            }
-            else
+            if (id != "NoID")
             {
                 foreach (var client in clients)
                 {
                     if (client.Id == id)
                     {
                         client.connection = ws;
+                        return String.Empty;
                     }
                 }
             }
-            return String.Empty;
+            var newClient = new ClientInstance(ws);
+            clients.Add(newClient);
+            return newClient.Id;
         }
 
         public static void UnAssignWebsocket(WebSocket ws)

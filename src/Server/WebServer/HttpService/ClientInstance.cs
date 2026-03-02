@@ -9,7 +9,8 @@ namespace WebServer.HttpService
     {
         public ClientInstance()
         {
-            this._id = Guid.NewGuid().ToString();
+            var newId = Guid.NewGuid().ToString();
+            this._id = newId;
         }
         public ClientInstance(WebSocket connection) : this()
         {

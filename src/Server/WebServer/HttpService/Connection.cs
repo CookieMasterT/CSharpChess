@@ -40,8 +40,6 @@ namespace WebServer.HttpService
 
             ClientManager.buffer.Add(webSocket);
 
-            Console.WriteLine("WebSocket connection established.");
-
             var buffer = new byte[4096];
 
             while (webSocket.State == WebSocketState.Open)

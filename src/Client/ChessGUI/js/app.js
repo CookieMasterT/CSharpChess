@@ -7,7 +7,7 @@ async function SendData(type, extraInfo = "") {
     let request = JSON.stringify({requestType: type, extraInfo: extraInfo})
     connection.send(request);
   } else {
-    console.log(`The type '${type}' is not in supportedInfos`);
+    console.error(`The type '${type}' is not in supportedInfos`);
   }
 }
 
@@ -43,8 +43,12 @@ async function SetUpConnection() {
     newId = (await WaitForInfo("identification", "NoID"))["Id"];
     await cookieStore.set({name: "sessionIdentifier", value: newId, path: "/"});
   } else {
-    await SendData(sessionId);
+    await SendData("identification", sessionId.value);
   }
+  Task = new Promise(resolve => {
+    connection.addEventListener("message", resolve, {once: true})
+  });
+  await Task
 
   connection.addEventListener("message", (event) => {
     CommandHandler(event.data);
