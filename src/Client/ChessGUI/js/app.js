@@ -77,7 +77,7 @@ async function InitChessBoard() {
 }
 
 function BuildChessBoard(board_array) {
-  console.log(board_array);
+  console.log("Building chessboard with: ", board_array);
   let board = document.getElementById("ChessBoard")
   let html = "";
 
@@ -164,7 +164,7 @@ async function HandlePieceTouch(event) {
 }
 
 async function DoMove(pieceX, pieceY, tileX, tileY) {
-  console.log(pieceX, pieceY, tileX, tileY)
+  console.log(`Moving from: ${pieceX}, ${pieceY} to: ${tileX}, ${tileY}`)
   await SendData("movePiece", `{"startX": ${pieceX}, "startY": ${pieceY},
                                                 "endX": ${tileX}, "endY": ${tileY}}`);
 }
