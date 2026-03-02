@@ -142,6 +142,11 @@ table * {
   min-width: 26px;
 }
 
+.Unavailable {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 
 /* ==========================================================================
    Helper classes

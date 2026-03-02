@@ -32,6 +32,12 @@ async function CommandHandler(eventText) {
 
 async function SetUpConnection() {
   connection = new WebSocket(url);
+
+  connection.addEventListener("error", () => {
+    document.getElementById("title").innerHTML = `Cannot connect to server (is it turned on?)`
+    document.getElementById("ChessBoard").classList.add("Unavailable");
+  });
+
   let Task = new Promise(resolve => {
     connection.addEventListener("open", resolve, {once: true})
   });
