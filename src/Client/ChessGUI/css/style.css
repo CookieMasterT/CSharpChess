@@ -109,6 +109,9 @@ table * {
 .tile-w img, .tile-b img {
   width: 50px;
   height: 50px;
+}
+
+.tile-w img.active, .tile-b img.active {
   cursor: grab;
 }
 
@@ -120,11 +123,11 @@ table * {
   background-color: var(--board-black);
 }
 
-.MoveHintHighlight {
+.move-hint-highlight {
   position: relative;
 }
 
-.MoveHintHighlight::after {
+.move-hint-highlight::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -137,7 +140,7 @@ table * {
   pointer-events: none;
 }
 
-.MoveHintHighlight:has(img)::after {
+.move-hint-highlight:has(img)::after {
   width: 40px;
   height: 40px;
   background-color: transparent;
@@ -149,7 +152,7 @@ table * {
   min-width: 26px;
 }
 
-.Unavailable {
+.unavailable {
   pointer-events: none;
   opacity: 0.5;
 }

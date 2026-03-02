@@ -1,6 +1,7 @@
 const url = "ws://localhost:54321/";
 let connection;
 const supportedRequests = ["identification", "boardState", "pieceMoves", "movePiece", "currentTeam"];
+let bodyEvent;
 
 async function SendData(type, extraInfo = "") {
   if (supportedRequests.includes(type)) {
@@ -35,7 +36,7 @@ async function SetUpConnection() {
 
   connection.addEventListener("error", () => {
     document.getElementById("title").innerHTML = `Cannot connect to server (is it turned on?)`
-    document.getElementById("ChessBoard").classList.add("Unavailable");
+    document.getElementById("ChessBoard").classList.add("unavailable");
   });
 
   let Task = new Promise(resolve => {
@@ -137,8 +138,14 @@ function AddPieceInteractivity(team) {
   let Pieces = document.querySelectorAll(`.piece.${team["team"]}`);
   for (let piece of Pieces) {
     piece.addEventListener('mousedown', (e) => {
+      e.stopPropagation();
       HandlePieceTouch(e).then()
     })
+    piece.classList.add("active");
+  }
+  if (!bodyEvent)
+  {
+    document.body.addEventListener("mousedown", () => RemoveHintHighlights())
   }
 }
 
@@ -146,10 +153,7 @@ async function HandlePieceTouch(event) {
   let PieceId = event.target.id;
   let [PieceX, PieceY] = PieceId.slice(-3).split(';');
 
-  document.querySelectorAll(".MoveHintHighlight").forEach((item) => {
-    item.classList.remove("MoveHintHighlight");
-    item.removeEventListener('click', DoMove)
-  })
+  RemoveHintHighlights();
 
   while (TempListeners.length > 0) {
     let [Element, Func] = TempListeners.pop()
@@ -160,12 +164,19 @@ async function HandlePieceTouch(event) {
   request.forEach((tile) => {
     let [tileX, tileY] = tile;
     let tileElement = document.getElementById(`tile-${tileX};${tileY}`);
-    tileElement.classList.add("MoveHintHighlight");
+    tileElement.classList.add("move-hint-highlight");
     let func = () => {
       DoMove(PieceX, PieceY, tileX, tileY)
     }
     tileElement.addEventListener('click', func)
     TempListeners.push([tileElement, func])
+  })
+}
+
+function RemoveHintHighlights() {
+  document.querySelectorAll(".move-hint-highlight").forEach((item) => {
+    item.classList.remove("move-hint-highlight");
+    item.removeEventListener('click', DoMove)
   })
 }
 
