@@ -137,6 +137,13 @@ table * {
   pointer-events: none;
 }
 
+.MoveHintHighlight:has(img)::after {
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+  border: 4px solid rgba(0, 0, 0, 0.5);
+}
+
 .tile-edge {
   text-align: center;
   min-width: 26px;
