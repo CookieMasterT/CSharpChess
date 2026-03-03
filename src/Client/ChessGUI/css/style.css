@@ -115,6 +115,13 @@ table * {
   cursor: grab;
 }
 
+.tile-w img.dragging, .tile-b img.dragging {
+  pointer-events: none;
+  cursor: grabbing;
+  position: absolute;
+  z-index: 10;
+}
+
 .tile-w {
   background-color: var(--board-white);
 }

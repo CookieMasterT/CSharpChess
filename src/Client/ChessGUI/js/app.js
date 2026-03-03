@@ -67,6 +67,7 @@ async function SetUpConnection() {
 async function Init() {
   await SetUpConnection()
   await InitChessBoard();
+  AddPieceDragging();
 }
 
 const FileNames = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
@@ -86,7 +87,7 @@ async function InitChessBoard() {
 }
 
 function BuildChessBoard(board_array) {
-  console.log("Building chessboard with: ", board_array);
+  // console.log("Building chessboard with: ", board_array);
   let board = document.getElementById("ChessBoard")
   let html = "";
 
@@ -145,22 +146,18 @@ function AddPieceInteractivity(team) {
     })
     piece.classList.add("active");
   }
-  if (!bodyEvent)
-  {
+  if (!bodyEvent) {
+    bodyEvent = true;
     document.body.addEventListener("mousedown", () => RemoveHintHighlights())
   }
 }
 
 async function HandlePieceTouch(event) {
-  let PieceId = event.target.id;
+  let Piece = event.target;
+  let PieceId = Piece.id;
   let [PieceX, PieceY] = PieceId.slice(-3).split(';');
 
   RemoveHintHighlights();
-
-  while (TempListeners.length > 0) {
-    let [Element, Func] = TempListeners.pop()
-    Element.removeEventListener('click', Func)
-  }
 
   let request = await WaitForInfo("pieceMoves", `{"x": ${PieceX}, "y": ${PieceY}}`);
   request.forEach((tile) => {
@@ -170,16 +167,44 @@ async function HandlePieceTouch(event) {
     let func = () => {
       DoMove(PieceX, PieceY, tileX, tileY)
     }
-    tileElement.addEventListener('click', func)
-    TempListeners.push([tileElement, func])
+    tileElement.addEventListener('mouseup', func)
+    TempListeners.push([tileElement, func, 'mouseup'])
+    tileElement.addEventListener('mousedown', func)
+    TempListeners.push([tileElement, func, 'mousedown'])
+
+    func = (e) => {
+      e.stopPropagation()
+    };
+    tileElement.addEventListener('mousedown', func)
+    TempListeners.push([tileElement, func, 'mousedown'])
+  })
+
+  Piece.classList.add("dragging")
+  Piece.style.left = `${event.clientX - 25}px`
+  Piece.style.top = `${event.clientY - 25}px`
+  window.addEventListener("mouseup", () => {
+    Piece.classList.remove("dragging")
+  })
+}
+
+function AddPieceDragging() {
+  window.addEventListener("mousemove", (e) => {
+    if (document.querySelector(".dragging") != null) {
+      document.querySelector(".dragging").style.left = `${e.clientX - 25}px`;
+      document.querySelector(".dragging").style.top = `${e.clientY - 25}px`;
+    }
   })
 }
 
 function RemoveHintHighlights() {
   document.querySelectorAll(".move-hint-highlight").forEach((item) => {
     item.classList.remove("move-hint-highlight");
-    item.removeEventListener('click', DoMove)
   })
+
+  while (TempListeners.length > 0) {
+    let [Element, Func, Type] = TempListeners.pop()
+    Element.removeEventListener(Type, Func)
+  }
 }
 
 async function DoMove(pieceX, pieceY, tileX, tileY) {
