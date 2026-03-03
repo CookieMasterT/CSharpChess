@@ -39,10 +39,12 @@ async function SetUpConnection() {
     document.getElementById("ChessBoard").classList.add("unavailable");
   });
 
-  let Task = new Promise(resolve => {
-    connection.addEventListener("open", resolve, {once: true})
-  });
-  await Task
+  if (connection.status !== WebSocket.OPEN) {
+    let Task = new Promise(resolve => {
+      connection.addEventListener("open", resolve, {once: true})
+    });
+    await Task
+  }
 
   let sessionId = (await cookieStore.get("sessionIdentifier"))
   if (!sessionId) {
@@ -52,7 +54,7 @@ async function SetUpConnection() {
   } else {
     await SendData("identification", sessionId.value);
   }
-  Task = new Promise(resolve => {
+  let Task = new Promise(resolve => {
     connection.addEventListener("message", resolve, {once: true})
   });
   await Task
