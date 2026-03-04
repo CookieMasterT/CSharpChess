@@ -96,19 +96,14 @@ async function HandlePieceTouch(event) {
     let [tileX, tileY] = tile;
     let tileElement = document.getElementById(`tile-${tileX};${tileY}`);
     tileElement.classList.add("move-hint-highlight");
-    let func = () => {
+    AddTempListener(tileElement, (e) => {
       DoMove(PieceX, PieceY, tileX, tileY)
-    }
-    tileElement.addEventListener('mouseup', func)
-    TempListeners.push([tileElement, func, 'mouseup'])
-    tileElement.addEventListener('mousedown', func)
-    TempListeners.push([tileElement, func, 'mousedown'])
-
-    func = (e) => {
       e.stopPropagation()
-    };
-    tileElement.addEventListener('mousedown', func)
-    TempListeners.push([tileElement, func, 'mousedown'])
+    }, 'mouseup');
+    AddTempListener(tileElement, (e) => {
+      DoMove(PieceX, PieceY, tileX, tileY)
+      e.stopPropagation()
+    }, 'mousedown');
   })
 
   Piece.classList.add("dragging")
@@ -117,6 +112,11 @@ async function HandlePieceTouch(event) {
   window.addEventListener("mouseup", () => {
     Piece.classList.remove("dragging")
   })
+}
+
+function AddTempListener(Element, Func, Type) {
+  Element.addEventListener(Type, Func)
+  TempListeners.push([Element, Func, Type])
 }
 
 export function AddPieceDragging() {

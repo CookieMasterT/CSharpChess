@@ -117,7 +117,6 @@ table * {
 
 .tile-w img.dragging, .tile-b img.dragging {
   pointer-events: none;
-  cursor: grabbing;
   position: absolute;
   z-index: 10;
 }
