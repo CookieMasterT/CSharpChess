@@ -29,6 +29,7 @@ export function AddPieceDragging() {
 
 function BuildChessBoard(board_array) {
   // console.log("Building chessboard with: ", board_array);
+  document.body.style.cursor = "";
   let board = document.getElementById("ChessBoard")
   let html = "";
 
@@ -116,10 +117,13 @@ async function HandlePieceTouch(event) {
   })
 
   Piece.classList.add("dragging")
+  document.getElementById("ChessBoard")
+  document.body.style.cursor = "grabbing";
   Piece.style.left = `${event.clientX - 25}px`
   Piece.style.top = `${event.clientY - 25}px`
   window.addEventListener("mouseup", () => {
     Piece.classList.remove("dragging")
+    document.body.style.cursor = "";
   })
 }
 
