@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 
 namespace WebServer.GameDataParsers
 {
@@ -9,7 +6,7 @@ namespace WebServer.GameDataParsers
     {
         public static string GetJson(string id)
         {
-            return new JObject(new JProperty("Id",id)).ToString();
+            return new JObject(new JProperty("Id", id)).ToString();
         }
     }
 }

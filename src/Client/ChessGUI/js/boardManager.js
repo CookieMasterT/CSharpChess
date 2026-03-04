@@ -18,6 +18,15 @@ export async function InitChessBoard() {
   AddPieceInteractivity(team)
 }
 
+export function AddPieceDragging() {
+  window.addEventListener("mousemove", (e) => {
+    if (document.querySelector(".dragging") != null) {
+      document.querySelector(".dragging").style.left = `${e.clientX - 25}px`;
+      document.querySelector(".dragging").style.top = `${e.clientY - 25}px`;
+    }
+  })
+}
+
 function BuildChessBoard(board_array) {
   // console.log("Building chessboard with: ", board_array);
   let board = document.getElementById("ChessBoard")
@@ -117,15 +126,6 @@ async function HandlePieceTouch(event) {
 function AddTempListener(Element, Func, Type) {
   Element.addEventListener(Type, Func)
   TempListeners.push([Element, Func, Type])
-}
-
-export function AddPieceDragging() {
-  window.addEventListener("mousemove", (e) => {
-    if (document.querySelector(".dragging") != null) {
-      document.querySelector(".dragging").style.left = `${e.clientX - 25}px`;
-      document.querySelector(".dragging").style.top = `${e.clientY - 25}px`;
-    }
-  })
 }
 
 function RemoveHintHighlights() {

@@ -1,9 +1,5 @@
-﻿using CSharpChess;
+﻿using CSharpChess.Game;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using WebServer.RequestTypes;
 
 namespace WebServer.GameDataParsers
 {
@@ -11,8 +7,10 @@ namespace WebServer.GameDataParsers
     {
         public static string GetJson()
         {
-            var json = new JObject();
-            json.Add("team", GameLogic.CurrentTurnTeam == Team.White ? "White" : "Black");
+            var json = new JObject
+            {
+                { "team", GameLogic.CurrentTurnTeam == Team.White ? "White" : "Black" }
+            };
             return json.ToString();
         }
     }

@@ -1,12 +1,11 @@
-﻿using CSharpChess.Pieces;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using CSharpChess.Board;
+using CSharpChess.Game;
 
-namespace CSharpChess
+namespace CSharpChess.Pieces
 {
     public class Queen : Piece
     {
+        private Queen() : base(Team.White) { }
         public Queen(Team team) : base(team)
         {
         }

@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
+﻿using CSharpChess.Game;
 
-namespace CSharpChess
+namespace CSharpChess.Board
 {
     public static class ChessBoard
     {
         static ChessBoard()
         {
-            Board = new BoardSquare[8, 8];
+            _board = new BoardSquare[8, 8];
             for (int i = 0; i < 8; i++)
             {
                 for (int k = 0; k < 8; k++)
                 {
-                    Board[i, k] = new BoardSquare(i, k);
+                    _board[i, k] = new BoardSquare(i, k);
                 }
             }
         }
-        public static BoardSquare[,] Board;
+        static BoardSquare[,] _board;
+        public static BoardSquare[,] Board { get => _board; private set => _board = value; }
 
         public static bool MovePiece(BoardSquare start, BoardSquare end)
         {

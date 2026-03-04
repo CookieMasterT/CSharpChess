@@ -1,8 +1,7 @@
-﻿using CSharpChess;
+﻿using CSharpChess.Board;
+using CSharpChess.Game;
+using CSharpChess.Pieces;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using WebServer.RequestTypes;
 
 namespace WebServer.GameDataParsers
@@ -12,13 +11,13 @@ namespace WebServer.GameDataParsers
         public static string GetJson(CoordinateInfo position)
         {
             var json = new JArray();
-            BoardSquare? tile = CSharpChess.ChessBoard.Board[position.x, position.y];
+            BoardSquare? tile = CSharpChess.Board.ChessBoard.Board[position.x, position.y];
             Piece? piece = tile?.content;
             if (piece is null || tile is null || piece.Team != GameLogic.CurrentTurnTeam)
                 return "{}";
             foreach (var item in piece.GetLegalMoves(tile))
             {
-                json.Add(new JArray(new int[] {item.X, item.Y}));
+                json.Add(new JArray(new int[] { item.X, item.Y }));
             }
             return json.ToString();
         }

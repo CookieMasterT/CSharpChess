@@ -4,7 +4,6 @@ const url = "ws://localhost:54321/";
 let connection;
 const supportedRequests = ["identification", "boardState", "pieceMoves", "movePiece", "currentTeam"];
 
-
 export async function SendData(type, extraInfo = "") {
   if (supportedRequests.includes(type)) {
     let request = JSON.stringify({requestType: type, extraInfo: extraInfo})

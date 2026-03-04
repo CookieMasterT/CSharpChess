@@ -7,5 +7,4 @@ async function Init() {
   AddPieceDragging();
 }
 
-
 Init().then();

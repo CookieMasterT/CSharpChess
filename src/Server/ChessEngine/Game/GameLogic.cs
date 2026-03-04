@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using CSharpChess.Board;
+using CSharpChess.Pieces;
 
-namespace CSharpChess
+namespace CSharpChess.Game
 {
     public enum Team { White, Black }
 
     public static class GameLogic
     {
-        public static Team CurrentTurnTeam;
+        public static Team CurrentTurnTeam { get; set; }
 
         public static void SwapSquareStruct(ref BoardSquare originalSquare, Piece? newContent)
         {
@@ -18,8 +17,7 @@ namespace CSharpChess
         public static Piece GetStartRowPiece(int index, Team team)
         {
             {
-                Piece[] pieces = new Piece[]
-                {new Rook(team), new Knight(team), new Bishop(team), new Queen(team), new King(team), new Bishop(team), new Knight(team), new Rook(team)};
+                Piece[] pieces = [new Rook(team), new Knight(team), new Bishop(team), new Queen(team), new King(team), new Bishop(team), new Knight(team), new Rook(team)];
                 return pieces[index];
             }
         }

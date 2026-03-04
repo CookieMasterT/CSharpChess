@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WebServer.RequestTypes
+﻿namespace WebServer.RequestTypes
 {
     internal class MovePieceParams
     {
-        public string? startX;
-        public string? startY;
-        public string? endX;
-        public string? endY;
+        public string? startX = null!;
+        public string? startY = null!;
+        public string? endX = null!;
+        public string? endY = null!;
     }
 }

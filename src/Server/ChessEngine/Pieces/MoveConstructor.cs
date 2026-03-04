@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using CSharpChess.Board;
 
 namespace CSharpChess.Pieces
 {
@@ -14,11 +12,11 @@ namespace CSharpChess.Pieces
             _singleton ??= new MoveConstructor();
             _singleton._moveInitiator = MoveInitiator;
             _singleton._sourceTile = SourceTile;
-            _singleton._moves = new List<BoardSquare>();
+            _singleton._moves = [];
             return _singleton;
         }
 
-        private BoardSquare _sourceTile;
+        private BoardSquare _sourceTile = null!;
         private Piece _moveInitiator = null!;
         private List<BoardSquare> _moves = null!;
 
@@ -28,7 +26,7 @@ namespace CSharpChess.Pieces
 
             var x = deltaX;
             var y = deltaY;
-            while (TryAdd(x,y) == MoveCheckResult.Can_VacantTile)
+            while (TryAdd(x, y) == MoveCheckResult.Can_VacantTile)
             {
                 x += deltaX;
                 y += deltaY;
@@ -67,10 +65,10 @@ namespace CSharpChess.Pieces
                 return MoveCheckResult.Can_VacantTile;
             }
 
-            if (!(square.content is null) && _moveInitiator.Team == square.content.Team)
+            if (square.content is not null && _moveInitiator.Team == square.content.Team)
                 return MoveCheckResult.Cant_BlockedByFriend;
 
-            if (CapturingMove && (!MustCapture || !(square.content is null)))
+            if (CapturingMove && (!MustCapture || square.content is not null))
             {
                 Add(x, y);
                 return MoveCheckResult.Can_WillCapture;

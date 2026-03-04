@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WebServer
+﻿namespace WebServer.RequestTypes
 {
     public class InitialInfoRequest
     {
-        public string? requestType;
-        public string? extraInfo;
+        public string? requestType = null!;
+        public string? extraInfo = null!;
     }
 }

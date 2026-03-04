@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using CSharpChess.Board;
+using CSharpChess.Game;
 
-namespace CSharpChess
+namespace CSharpChess.Pieces
 {
     public abstract class Piece
     {
+        private Piece() { }
         public Piece(Team team)
         {
             Team = team;

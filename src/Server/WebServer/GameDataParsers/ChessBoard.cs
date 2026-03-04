@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using CSharpChess;
+﻿using CSharpChess.Game;
 using Newtonsoft.Json.Linq;
 
 namespace WebServer.GameDataParsers
@@ -18,13 +15,13 @@ namespace WebServer.GameDataParsers
                 for (int y = 0; y < 8; y++)
                 {
                     var str = string.Empty;
-                    var tile = CSharpChess.ChessBoard.Board[x, y];
+                    var tile = CSharpChess.Board.ChessBoard.Board[x, y];
                     switch (tile.content?.Team)
                     {
-                        case CSharpChess.Team.White:
+                        case CSharpChess.Game.Team.White:
                             str += ChessNotation.WhiteTeam;
                             break;
-                        case CSharpChess.Team.Black:
+                        case CSharpChess.Game.Team.Black:
                             str += ChessNotation.BlackTeam;
                             break;
                     }
