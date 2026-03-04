@@ -6,7 +6,7 @@ const supportedRequests = ["identification", "boardState", "pieceMoves", "movePi
 
 export async function SendData(type, extraInfo = "") {
   if (supportedRequests.includes(type)) {
-    let request = JSON.stringify({requestType: type, extraInfo: extraInfo})
+    let request = JSON.stringify({requestType: type, extraInfo: extraInfo});
     connection.send(request);
   } else {
     console.error(`The type '${type}' is not in supportedInfos`);
@@ -22,13 +22,13 @@ export async function WaitForInfo(type, extraInfo = "") {
   await SendData(type, extraInfo);
   let returnedInfo;
   returnedInfo = await Task;
-  return JSON.parse(returnedInfo)
+  return JSON.parse(returnedInfo);
 }
 
 async function CommandHandler(eventText) {
   switch (eventText) {
     case "refreshBoard":
-      await InitChessBoard()
+      await InitChessBoard();
   }
 }
 
@@ -36,15 +36,15 @@ export async function SetUpConnection() {
   connection = new WebSocket(url);
 
   connection.addEventListener("error", () => {
-    document.getElementById("title").innerHTML = `Cannot connect to server (is it turned on?)`
+    document.getElementById("title").innerHTML = `Cannot connect to server (is it turned on?)`;
     document.getElementById("ChessBoard").classList.add("unavailable");
   });
 
   if (connection.readyState !== WebSocket.OPEN) {
     let Task = new Promise(resolve => {
-      connection.addEventListener("open", resolve, {once: true})
+      connection.addEventListener("open", resolve, {once: true});
     });
-    await Task
+    await Task;
   }
 
   let sessionId = (await cookieStore.get("sessionIdentifier"))
@@ -56,7 +56,7 @@ export async function SetUpConnection() {
     await SendData("identification", sessionId.value);
   }
   let Task = new Promise(resolve => {
-    connection.addEventListener("message", resolve, {once: true})
+    connection.addEventListener("message", resolve, {once: true});
   });
   await Task
 

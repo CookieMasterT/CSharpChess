@@ -5,9 +5,9 @@ let bodyEvent;
 const FileNames = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const RankNames = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
-const ImageFileNameDict = {"K": "king", "Q": "queen", "R": "rook", "B": "bishop", "N": "knight", "P": "pawn"}
+const ImageFileNameDict = {"K": "king", "Q": "queen", "R": "rook", "B": "bishop", "N": "knight", "P": "pawn"};
 
-let TempListeners = []
+let TempListeners = [];
 
 export async function InitChessBoard() {
   let board = await WaitForInfo("boardState")
@@ -15,7 +15,7 @@ export async function InitChessBoard() {
 
   let team = await WaitForInfo("currentTeam");
   document.getElementById("title").innerHTML = `It is currently: ${team["team"]}'s turn`;
-  AddPieceInteractivity(team)
+  AddPieceInteractivity(team);
 }
 
 export function AddPieceDragging() {
@@ -30,28 +30,28 @@ export function AddPieceDragging() {
 function BuildChessBoard(board_array) {
   // console.log("Building chessboard with: ", board_array);
   document.body.style.cursor = "";
-  let board = document.getElementById("ChessBoard")
+  let board = document.getElementById("ChessBoard");
   let html = "";
 
-  html += `<table>`
+  html += `<table>`;
   for (let i = 0; i < 10; i++) {
-    html += `<tr>`
+    html += `<tr>`;
     for (let k = 0; k < 10; k++) {
       if (k !== 0 && i !== 0 && i !== 9 && k !== 9) {
         let x = k - 1;
         let y = i - 1;
         html += `<td
                   class=\"tile-${(x % 2 + y % 2) % 2 === 1 ? "w" : "b"}"
-                  id="tile-${x};${y}">`
+                  id="tile-${x};${y}">`;
 
-        let tile = board_array[x][y]
+        let tile = board_array[x][y];
         if (tile !== "U") {
-          let color = tile[0]
+          let color = tile[0];
           let type;
           if (tile.length === 1)
-            type = "P"
+            type = "P";
           else
-            type = tile[1]
+            type = tile[1];
 
           html += `<img
                     class="piece ${color === 'w' ? 'White' : 'Black'}"
@@ -59,22 +59,22 @@ function BuildChessBoard(board_array) {
                     id="piece-${x};${y}"
                     src="img/${ImageFileNameDict[type]}-${color}.svg" alt="${tile}"/>`;
         }
-        html += `</td>`
+        html += `</td>`;
       } else {
-        html += `<td class="tile-edge">`
+        html += `<td class="tile-edge">`;
         if (i !== 0 && i !== 9) {
-          html += `<span>${RankNames[i - 1]}</span>`
+          html += `<span>${RankNames[i - 1]}</span>`;
         } else {
           if (k !== 0 && k !== 9) {
-            html += `<span>${FileNames[k - 1]}</span>`
+            html += `<span>${FileNames[k - 1]}</span>`;
           }
         }
-        html += `</td>`
+        html += `</td>`;
       }
     }
-    html += `</tr>`
+    html += `</tr>`;
   }
-  html += `</table>`
+  html += `</table>`;
 
   board.innerHTML = html;
 }
@@ -107,29 +107,28 @@ async function HandlePieceTouch(event) {
     let tileElement = document.getElementById(`tile-${tileX};${tileY}`);
     tileElement.classList.add("move-hint-highlight");
     AddTempListener(tileElement, (e) => {
-      DoMove(PieceX, PieceY, tileX, tileY)
-      e.stopPropagation()
+      DoMove(PieceX, PieceY, tileX, tileY);
+      e.stopPropagation();
     }, 'mouseup');
     AddTempListener(tileElement, (e) => {
-      DoMove(PieceX, PieceY, tileX, tileY)
-      e.stopPropagation()
+      DoMove(PieceX, PieceY, tileX, tileY);
+      e.stopPropagation();
     }, 'mousedown');
   })
 
-  Piece.classList.add("dragging")
-  document.getElementById("ChessBoard")
+  Piece.classList.add("dragging");
   document.body.style.cursor = "grabbing";
-  Piece.style.left = `${event.clientX - 25}px`
-  Piece.style.top = `${event.clientY - 25}px`
+  Piece.style.left = `${event.clientX - 25}px`;
+  Piece.style.top = `${event.clientY - 25}px`;
   window.addEventListener("mouseup", () => {
-    Piece.classList.remove("dragging")
+    Piece.classList.remove("dragging");
     document.body.style.cursor = "";
   })
 }
 
 function AddTempListener(Element, Func, Type) {
-  Element.addEventListener(Type, Func)
-  TempListeners.push([Element, Func, Type])
+  Element.addEventListener(Type, Func);
+  TempListeners.push([Element, Func, Type]);
 }
 
 function RemoveHintHighlights() {
@@ -138,8 +137,8 @@ function RemoveHintHighlights() {
   })
 
   while (TempListeners.length > 0) {
-    let [Element, Func, Type] = TempListeners.pop()
-    Element.removeEventListener(Type, Func)
+    let [Element, Func, Type] = TempListeners.pop();
+    Element.removeEventListener(Type, Func);
   }
 }
 
