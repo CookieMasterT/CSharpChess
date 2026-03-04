@@ -1,74 +1,6 @@
-const url = "ws://localhost:54321/";
-let connection;
-const supportedRequests = ["identification", "boardState", "pieceMoves", "movePiece", "currentTeam"];
+import {SendData, WaitForInfo} from "./webSocket.js";
+
 let bodyEvent;
-
-async function SendData(type, extraInfo = "") {
-  if (supportedRequests.includes(type)) {
-    let request = JSON.stringify({requestType: type, extraInfo: extraInfo})
-    connection.send(request);
-  } else {
-    console.error(`The type '${type}' is not in supportedInfos`);
-  }
-}
-
-async function WaitForInfo(type, extraInfo = "") {
-  let Task = new Promise(resolve => {
-    connection.addEventListener("message",
-      (e) => resolve(e.data)
-      , {once: true})
-  });
-  await SendData(type, extraInfo);
-  let returnedInfo;
-  returnedInfo = await Task;
-  return JSON.parse(returnedInfo)
-}
-
-async function CommandHandler(eventText) {
-  switch (eventText) {
-    case "refreshBoard":
-      await InitChessBoard()
-  }
-}
-
-async function SetUpConnection() {
-  connection = new WebSocket(url);
-
-  connection.addEventListener("error", () => {
-    document.getElementById("title").innerHTML = `Cannot connect to server (is it turned on?)`
-    document.getElementById("ChessBoard").classList.add("unavailable");
-  });
-
-  if (connection.status !== WebSocket.OPEN) {
-    let Task = new Promise(resolve => {
-      connection.addEventListener("open", resolve, {once: true})
-    });
-    await Task
-  }
-
-  let sessionId = (await cookieStore.get("sessionIdentifier"))
-  if (!sessionId) {
-    let newId;
-    newId = (await WaitForInfo("identification", "NoID"))["Id"];
-    await cookieStore.set({name: "sessionIdentifier", value: newId, path: "/"});
-  } else {
-    await SendData("identification", sessionId.value);
-  }
-  let Task = new Promise(resolve => {
-    connection.addEventListener("message", resolve, {once: true})
-  });
-  await Task
-
-  connection.addEventListener("message", (event) => {
-    CommandHandler(event.data);
-  })
-}
-
-async function Init() {
-  await SetUpConnection()
-  await InitChessBoard();
-  AddPieceDragging();
-}
 
 const FileNames = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const RankNames = ['1', '2', '3', '4', '5', '6', '7', '8'];
@@ -77,7 +9,7 @@ const ImageFileNameDict = {"K": "king", "Q": "queen", "R": "rook", "B": "bishop"
 
 let TempListeners = []
 
-async function InitChessBoard() {
+export async function InitChessBoard() {
   let board = await WaitForInfo("boardState")
   BuildChessBoard(board);
 
@@ -187,7 +119,7 @@ async function HandlePieceTouch(event) {
   })
 }
 
-function AddPieceDragging() {
+export function AddPieceDragging() {
   window.addEventListener("mousemove", (e) => {
     if (document.querySelector(".dragging") != null) {
       document.querySelector(".dragging").style.left = `${e.clientX - 25}px`;
@@ -212,5 +144,3 @@ async function DoMove(pieceX, pieceY, tileX, tileY) {
   await SendData("movePiece", `{"startX": ${pieceX}, "startY": ${pieceY},
                                                 "endX": ${tileX}, "endY": ${tileY}}`);
 }
-
-Init().then();
