@@ -17,6 +17,8 @@ html {
   line-height: 1.4;
   --board-white: #ffce9e;
   --board-black: #d18b47;
+  --board-white-glow: #ffe682;
+  --board-black-glow: #e8c556;
 }
 
 /*
@@ -85,6 +87,14 @@ table * {
 
 .move-hint-highlight {
   position: relative;
+}
+
+.move-hint-origin.tile-w {
+  background-color: var(--board-white-glow);
+}
+
+.move-hint-origin.tile-b {
+  background-color: var(--board-black-glow);
 }
 
 .move-hint-highlight::after {

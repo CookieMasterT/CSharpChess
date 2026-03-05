@@ -102,10 +102,12 @@ async function HandlePieceTouch(event) {
   RemoveHintHighlights();
 
   let request = await WaitForInfo("pieceMoves", `{"x": ${PieceX}, "y": ${PieceY}}`);
+  document.getElementById(`tile-${PieceX};${PieceY}`).classList.add("move-hint-origin");
   request.forEach((tile) => {
     let [tileX, tileY] = tile;
     let tileElement = document.getElementById(`tile-${tileX};${tileY}`);
     tileElement.classList.add("move-hint-highlight");
+
     AddTempListener(tileElement, (e) => {
       DoMove(PieceX, PieceY, tileX, tileY);
       e.stopPropagation();
@@ -134,6 +136,9 @@ function AddTempListener(Element, Func, Type) {
 function RemoveHintHighlights() {
   document.querySelectorAll(".move-hint-highlight").forEach((item) => {
     item.classList.remove("move-hint-highlight");
+  })
+  document.querySelectorAll(".move-hint-origin").forEach((item) => {
+    item.classList.remove("move-hint-origin");
   })
 
   while (TempListeners.length > 0) {

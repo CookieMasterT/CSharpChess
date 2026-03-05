@@ -55,10 +55,6 @@ export async function SetUpConnection() {
   } else {
     await SendData("identification", sessionId.value);
   }
-  let Task = new Promise(resolve => {
-    connection.addEventListener("message", resolve, {once: true});
-  });
-  await Task
 
   connection.addEventListener("message", (event) => {
     CommandHandler(event.data);
