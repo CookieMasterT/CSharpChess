@@ -18,6 +18,13 @@ namespace CSharpChess.Board
         static BoardSquare[,] _board;
         public static BoardSquare[,] Board { get => _board; private set => _board = value; }
 
+        public static BoardSquare? GetSquare(int x, int y)
+        {
+            if (x is >= 0 and < 8 && y is >= 0 and < 8)
+                return _board[x, y];
+            return null;
+        }
+
         public static bool MovePiece(BoardSquare start, BoardSquare end)
         {
             if (start.content is null)
@@ -30,6 +37,15 @@ namespace CSharpChess.Board
 
                 end.content = start.content;
                 start.content = null;
+                end.content.SpecialMoveCallback(end);
+
+                foreach (var tile in _board)
+                {
+                    if (tile.content is not null && tile.content.Team == GameLogic.CurrentTurnTeam)
+                    {
+                        tile.content.TurnStartCallback();
+                    }
+                }
 
                 return true;
             }

@@ -22,12 +22,45 @@ namespace CSharpChess.Pieces
 
             // if the pawn hasn't moved yet, they can move 2 forward
             if (FirstMoveWorks && !hasMoved)
-                MV.TryAdd(0, 2 * direction, CapturingMove: false);
+                if (MV.TryAdd(0, 2 * direction, CapturingMove: false) == MoveConstructor.MoveCheckResult.Can_VacantTile)
+                {
+                    SpecialMoveActions.Add((MV.GetMoves().Last(), () => { doubleMove = true; }));
+                }
 
             // capture on diagonals in front of pawn
             MV.TryAdd(1, direction, MustCapture: true);
             MV.TryAdd(-1, direction, MustCapture: true);
+
+            // if there is an adjacent enemy pawn that just did a double move, we can capture it en passant
+            BoardSquare? leftSquare = Board.ChessBoard.GetSquare(ContainingSquare.X - 1, ContainingSquare.Y);
+            if (leftSquare is not null && leftSquare.content is Pawn pawnL && pawnL.doubleMove)
+            {
+                MV.TryAdd(-1, direction);
+                SpecialMoveActions.Add((MV.GetMoves().Last(), () => { leftSquare.content = null; }));
+            }
+            BoardSquare? rightSquare = Board.ChessBoard.GetSquare(ContainingSquare.X + 1, ContainingSquare.Y);
+            if (rightSquare is not null && rightSquare.content is Pawn pawnR && pawnR.doubleMove)
+            {
+                MV.TryAdd(1, direction);
+                SpecialMoveActions.Add((MV.GetMoves().Last(), () => { rightSquare.content = null; }));
+            }
             return MV.GetMoves();
+        }
+        private bool doubleMove = false;
+        private List<(BoardSquare, Action)> SpecialMoveActions = [];
+        public override void SpecialMoveCallback(BoardSquare tile)
+        {
+            var specialMove = SpecialMoveActions.FirstOrDefault(move => move.Item1 == tile);
+            if (specialMove != default)
+            {
+                specialMove.Item2();
+            }
+        }
+
+        public override void TurnStartCallback()
+        {
+            doubleMove = false;
+            SpecialMoveActions.Clear();
         }
     }
 }

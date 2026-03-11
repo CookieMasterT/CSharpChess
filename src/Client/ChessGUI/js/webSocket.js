@@ -53,7 +53,7 @@ export async function SetUpConnection() {
     newId = (await WaitForInfo("identification", "NoID"))["Id"];
     await cookieStore.set({name: "sessionIdentifier", value: newId, path: "/"});
   } else {
-    await SendData("identification", sessionId.value);
+    await WaitForInfo("identification", sessionId.value);
   }
 
   connection.addEventListener("message", (event) => {

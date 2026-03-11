@@ -18,5 +18,9 @@ namespace CSharpChess.Pieces
         public readonly Team Team;
 
         abstract public List<BoardSquare> GetLegalMoves(BoardSquare ContainingSquare);
+
+        public virtual void SpecialMoveCallback(BoardSquare tile) { }
+
+        public virtual void TurnStartCallback() { }
     }
 }
