@@ -2,23 +2,11 @@
 
 namespace CSharpChess.Pieces
 {
-    internal class MoveConstructor
+    internal class MoveConstructor(Piece MoveInitiator, BoardSquare SourceTile)
     {
-        private static MoveConstructor? _singleton;
-
-        private MoveConstructor() { }
-        public static MoveConstructor GetMoveConstructor(Piece MoveInitiator, BoardSquare SourceTile)
-        {
-            _singleton ??= new MoveConstructor();
-            _singleton._moveInitiator = MoveInitiator;
-            _singleton._sourceTile = SourceTile;
-            _singleton._moves = [];
-            return _singleton;
-        }
-
-        private BoardSquare _sourceTile = null!;
-        private Piece _moveInitiator = null!;
-        private List<BoardSquare> _moves = null!;
+        private readonly BoardSquare _sourceTile = SourceTile;
+        private readonly Piece _moveInitiator = MoveInitiator;
+        private readonly List<BoardSquare> _moves = [];
 
         public void LineAdd(int deltaX, int deltaY)
         {

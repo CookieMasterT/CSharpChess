@@ -14,7 +14,7 @@ namespace CSharpChess.Pieces
 
         public override List<BoardSquare> GetLegalMoves(BoardSquare ContainingSquare)
         {
-            var MV = MoveConstructor.GetMoveConstructor(this, ContainingSquare);
+            var MV = new MoveConstructor(this, ContainingSquare);
 
             // Jump north
             MV.TryAdd(-1, 2);

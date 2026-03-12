@@ -14,7 +14,7 @@ namespace CSharpChess.Pieces
 
         public override List<BoardSquare> GetLegalMoves(BoardSquare ContainingSquare)
         {
-            var MV = MoveConstructor.GetMoveConstructor(this, ContainingSquare);
+            var MV = new MoveConstructor(this, ContainingSquare);
             int direction = (this.Team == Team.White) ? 1 : -1; // Black pawns move down the y axis (-1) instead of up the y axis (+1)
 
             // move forward
@@ -47,7 +47,7 @@ namespace CSharpChess.Pieces
             return MV.GetMoves();
         }
         private bool doubleMove = false;
-        private List<(BoardSquare, Action)> SpecialMoveActions = [];
+        private readonly List<(BoardSquare, Action)> SpecialMoveActions = [];
         public override void SpecialMoveCallback(BoardSquare tile)
         {
             var specialMove = SpecialMoveActions.FirstOrDefault(move => move.Item1 == tile);

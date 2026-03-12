@@ -25,6 +25,21 @@ namespace CSharpChess.Board
             return null;
         }
 
+        public static bool IsSquareAttacked(BoardSquare square, Team byTeam)
+        {
+            foreach (var tile in _board)
+            {
+                if (tile.content is not null && tile.content.Team == byTeam)
+                {
+                    if (tile.content.GetLegalMoves(tile).Contains(square))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         public static bool MovePiece(BoardSquare start, BoardSquare end)
         {
             if (start.content is null)
