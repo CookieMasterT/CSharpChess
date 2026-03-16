@@ -15,7 +15,7 @@ namespace WebServer.GameDataParsers
                 for (int y = 0; y < 8; y++)
                 {
                     var str = string.Empty;
-                    var tile = CSharpChess.Board.ChessBoard.Board[x, y];
+                    var tile = GameLogic.ChessBoard.Board[x, y];
                     switch (tile.content?.Team)
                     {
                         case CSharpChess.Game.Team.White:

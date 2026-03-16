@@ -12,9 +12,9 @@ namespace CSharpChess.Pieces
 
         public override string Name { get => ChessNotation.King; }
 
-        public override List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare)
+        public override List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard)
         {
-            var MV = new MoveConstructor(this, ContainingSquare);
+            var MV = new MoveConstructor(this, ContainingSquare, ContainingBoard);
 
             // king moves in a 3x3 on top of itself (any adjacent square)
             for (int i = -1; i <= 1; i++)
@@ -37,7 +37,7 @@ namespace CSharpChess.Pieces
                     while (true)
                     {
                         X += dir;
-                        var currentSquare = ChessBoard.GetSquare(X, Y);
+                        var currentSquare = ContainingBoard.GetSquare(X, Y);
                         if (currentSquare != null)
                         {
 
@@ -49,7 +49,7 @@ namespace CSharpChess.Pieces
                                     MV.TryAdd(X - ContainingSquare.X - dir, 0);
                                     SpecialMoveActions.Add((castleMoveSquare, () =>
                                     {
-                                        ChessBoard.GetSquare(castleMoveSquare.X - dir, castleMoveSquare.Y)?.content = currentSquare.content;
+                                        ContainingBoard.GetSquare(castleMoveSquare.X - dir, castleMoveSquare.Y)?.content = currentSquare.content;
                                         currentSquare.content = null;
                                     }));
                                 }

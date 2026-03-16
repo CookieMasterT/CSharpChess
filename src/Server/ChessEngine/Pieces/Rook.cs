@@ -12,9 +12,9 @@ namespace CSharpChess.Pieces
 
         public override string Name { get => ChessNotation.Rook; }
 
-        public override List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare)
+        public override List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard)
         {
-            var MV = new MoveConstructor(this, ContainingSquare);
+            var MV = new MoveConstructor(this, ContainingSquare, ContainingBoard);
 
             MV.LineAdd(0, 1); // move in a line north
             MV.LineAdd(1, 0); // move in a line east

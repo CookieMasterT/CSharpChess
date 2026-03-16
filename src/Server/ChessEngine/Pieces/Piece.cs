@@ -17,12 +17,12 @@ namespace CSharpChess.Pieces
 
         public readonly Team Team;
 
-        public List<BoardSquare> GetLegalMoves(BoardSquare ContainingSquare)
+        public List<BoardSquare> GetLegalMoves(BoardSquare ContainingSquare, ChessBoard ContainingBoard)
         {
-            return GetAvailableTiles(ContainingSquare);
+            return GetAvailableTiles(ContainingSquare, ContainingBoard);
         }
 
-        abstract public List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare);
+        abstract public List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard);
 
         public virtual void SpecialMoveCallback(BoardSquare tile) { }
 

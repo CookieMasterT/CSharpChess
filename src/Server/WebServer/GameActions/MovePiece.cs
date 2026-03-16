@@ -1,4 +1,5 @@
-﻿using CSharpChess.Board;
+﻿using CSharpChess.Game;
+using CSharpChess.Board;
 using WebServer.RequestTypes;
 
 namespace WebServer.GameActions
@@ -9,7 +10,7 @@ namespace WebServer.GameActions
         {
             if (info.startX == null || info.startY == null || info.endX == null || info.endY == null)
                 return;
-            ChessBoard.MovePiece(int.Parse(info.startX), int.Parse(info.startY), int.Parse(info.endX), int.Parse(info.endY));
+            ChessBoard.MovePiece(int.Parse(info.startX), int.Parse(info.startY), int.Parse(info.endX), int.Parse(info.endY), GameLogic.ChessBoard);
         }
     }
 }

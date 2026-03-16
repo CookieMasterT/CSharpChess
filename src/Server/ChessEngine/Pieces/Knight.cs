@@ -12,9 +12,9 @@ namespace CSharpChess.Pieces
 
         public override string Name { get => ChessNotation.Knight; }
 
-        public override List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare)
+        public override List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard)
         {
-            var MV = new MoveConstructor(this, ContainingSquare);
+            var MV = new MoveConstructor(this, ContainingSquare, ContainingBoard);
 
             // Jump north
             MV.TryAdd(-1, 2);

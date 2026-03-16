@@ -9,6 +9,10 @@ namespace CSharpChess.Game
     {
         public static Team CurrentTurnTeam { get; set; }
 
+        public static ChessBoard ChessBoard => _chessBoard;
+
+        private static ChessBoard _chessBoard;
+
         public static void SwapSquareStruct(ref BoardSquare originalSquare, Piece? newContent)
         {
             originalSquare.content = newContent;
@@ -24,6 +28,7 @@ namespace CSharpChess.Game
 
         public static void SetupBoard()
         {
+            _chessBoard = new ChessBoard();
             for (int x = 0; x < 8; x++)
             {
                 for (int y = 0; y < 8; y++)

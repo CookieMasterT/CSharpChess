@@ -12,9 +12,9 @@ namespace CSharpChess.Pieces
 
         public override string Name { get => ChessNotation.Pawn; }
 
-        public override List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare)
+        public override List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard)
         {
-            var MV = new MoveConstructor(this, ContainingSquare);
+            var MV = new MoveConstructor(this, ContainingSquare, ContainingBoard);
             int direction = (this.Team == Team.White) ? 1 : -1; // Black pawns move down the y axis (-1) instead of up the y axis (+1)
 
             // move forward
@@ -32,13 +32,13 @@ namespace CSharpChess.Pieces
             MV.TryAdd(-1, direction, MustCapture: true);
 
             // if there is an adjacent enemy pawn that just did a double move, we can capture it en passant
-            BoardSquare? leftSquare = Board.ChessBoard.GetSquare(ContainingSquare.X - 1, ContainingSquare.Y);
+            BoardSquare? leftSquare = ContainingBoard.GetSquare(ContainingSquare.X - 1, ContainingSquare.Y);
             if (leftSquare is not null && leftSquare.content is Pawn pawnL && pawnL.doubleMove)
             {
                 MV.TryAdd(-1, direction);
                 SpecialMoveActions.Add((MV.GetMoves().Last(), () => { leftSquare.content = null; }));
             }
-            BoardSquare? rightSquare = Board.ChessBoard.GetSquare(ContainingSquare.X + 1, ContainingSquare.Y);
+            BoardSquare? rightSquare = ContainingBoard.GetSquare(ContainingSquare.X + 1, ContainingSquare.Y);
             if (rightSquare is not null && rightSquare.content is Pawn pawnR && pawnR.doubleMove)
             {
                 MV.TryAdd(1, direction);
