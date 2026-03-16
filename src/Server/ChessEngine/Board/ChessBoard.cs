@@ -66,14 +66,14 @@ namespace CSharpChess.Board
             }
             return false;
         }
-        public static bool MovePiece(int start_x, int start_y, int end_x, int end_y)
+        public static bool MovePiece(int startX, int startY, int endX, int endY)
         {
-            foreach (var coord in new int[4] { start_x, start_y, end_x, end_y })
+            foreach (var coord in new int[4] { startX, startY, endX, endY })
             {
                 if (!(coord is >= 0 and < 8))
                     return false;
             }
-            return MovePiece(ChessBoard.Board[start_x, start_y], ChessBoard.Board[end_x, end_y]);
+            return MovePiece(ChessBoard.Board[startX, startY], ChessBoard.Board[endX, endY]);
         }
     }
 }
