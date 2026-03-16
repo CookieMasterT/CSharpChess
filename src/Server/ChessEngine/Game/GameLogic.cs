@@ -11,7 +11,7 @@ namespace CSharpChess.Game
 
         public static ChessBoard ChessBoard => _chessBoard;
 
-        private static ChessBoard _chessBoard;
+        private static ChessBoard _chessBoard = null!;
 
         public static void SwapSquareStruct(ref BoardSquare originalSquare, Piece? newContent)
         {

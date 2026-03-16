@@ -2,11 +2,11 @@
 
 namespace CSharpChess.Pieces
 {
-    internal class MoveConstructor(Piece MoveInitiator, BoardSquare SourceTile, ChessBoard targetBoard)
+    internal class MoveConstructor(Piece MoveInitiator, BoardSquare SourceTile, ChessBoard TargetBoard)
     {
         private readonly Piece _moveInitiator = MoveInitiator;
         private readonly BoardSquare _sourceTile = SourceTile;
-        public readonly ChessBoard _targetBoard = targetBoard;
+        public readonly ChessBoard _targetBoard = TargetBoard;
         private readonly List<BoardSquare> _moves = [];
 
         public void LineAdd(int deltaX, int deltaY)
@@ -46,7 +46,7 @@ namespace CSharpChess.Pieces
             if (!(x is >= 0 and < 8 && y is >= 0 and < 8))
                 return MoveCheckResult.Cant_OutOfBounds;
 
-            BoardSquare square = targetBoard.Board[x, y];
+            BoardSquare square = _targetBoard.Board[x, y];
 
             if (square.content is null && !MustCapture)
             {
@@ -70,7 +70,7 @@ namespace CSharpChess.Pieces
 
         private void Add(int x, int y)
         {
-            _moves.Add(targetBoard.Board[x, y]);
+            _moves.Add(_targetBoard.Board[x, y]);
         }
 
         public List<BoardSquare> GetMoves()

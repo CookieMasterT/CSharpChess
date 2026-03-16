@@ -66,7 +66,7 @@ namespace CSharpChess.Pieces
             return MV.GetMoves();
         }
 
-        private bool CheckTilesForCastle(List<BoardSquare> tiles)
+        private static bool CheckTilesForCastle(List<BoardSquare> tiles)
         {
             foreach (var tile in tiles)
             {

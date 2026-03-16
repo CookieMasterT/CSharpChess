@@ -10,7 +10,6 @@ namespace WebServer.GameDataParsers
             var json = new JArray();
             for (int x = 0; x < 8; x++)
             {
-                // todo: ensure that this is actually a rank
                 var rank = new JArray();
                 for (int y = 0; y < 8; y++)
                 {
