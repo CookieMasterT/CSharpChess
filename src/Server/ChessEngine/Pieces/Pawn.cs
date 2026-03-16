@@ -12,7 +12,7 @@ namespace CSharpChess.Pieces
 
         public override string Name { get => ChessNotation.Pawn; }
 
-        public override List<BoardSquare> GetLegalMoves(BoardSquare ContainingSquare)
+        public override List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare)
         {
             var MV = new MoveConstructor(this, ContainingSquare);
             int direction = (this.Team == Team.White) ? 1 : -1; // Black pawns move down the y axis (-1) instead of up the y axis (+1)
