@@ -33,13 +33,13 @@ namespace CSharpChess.Pieces
 
             // if there is an adjacent enemy pawn that just did a double move, we can capture it en passant
             BoardSquare? leftSquare = ContainingBoard.GetSquare(ContainingSquare.X - 1, ContainingSquare.Y);
-            if (leftSquare is not null && leftSquare.content is Pawn pawnL && pawnL.doubleMove)
+            if (leftSquare is not null && leftSquare.content is Pawn pawnL && pawnL.doubleMove && pawnL.Team != this.Team)
             {
                 MV.TryAdd(-1, direction);
                 SpecialMoveActions.Add((MV.GetMoves().Last(), () => { leftSquare.content = null; }));
             }
             BoardSquare? rightSquare = ContainingBoard.GetSquare(ContainingSquare.X + 1, ContainingSquare.Y);
-            if (rightSquare is not null && rightSquare.content is Pawn pawnR && pawnR.doubleMove)
+            if (rightSquare is not null && rightSquare.content is Pawn pawnR && pawnR.doubleMove && pawnR.Team != this.Team)
             {
                 MV.TryAdd(1, direction);
                 SpecialMoveActions.Add((MV.GetMoves().Last(), () => { rightSquare.content = null; }));
