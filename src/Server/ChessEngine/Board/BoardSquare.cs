@@ -16,6 +16,12 @@ namespace CSharpChess.Board
             _x = x;
             _y = y;
         }
+        public BoardSquare(BoardSquare squareToCopy)
+        {
+            _x = squareToCopy._x;
+            _y = squareToCopy._y;
+            content = squareToCopy.content;
+        }
 
         public int X
         {

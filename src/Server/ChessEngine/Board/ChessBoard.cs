@@ -1,4 +1,5 @@
 ﻿using CSharpChess.Game;
+using CSharpChess.Pieces;
 
 namespace CSharpChess.Board
 {
@@ -25,9 +26,9 @@ namespace CSharpChess.Board
             return null;
         }
 
-        public bool IsSquareAttacked(BoardSquare square, Team byTeam, ChessBoard targetBoard)
+        public static bool IsSquareAttacked(BoardSquare square, Team byTeam, ChessBoard targetBoard)
         {
-            foreach (var tile in _board)
+            foreach (var tile in targetBoard.Board)
             {
                 if (tile.content is not null && tile.content.Team == byTeam)
                 {
@@ -38,27 +39,46 @@ namespace CSharpChess.Board
                 }
             }
             return false;
-        } 
+        }
 
-        public static bool MovePiece(int startX, int startY, int endX, int endY, ChessBoard targetBoard)
+        public static bool KingInDanger(Team team, ChessBoard targetBoard)
+        {
+            foreach (var tile in targetBoard.Board)
+            {
+                if (tile?.content is King king && king.Team == team)
+                {
+                    if (IsSquareAttacked(tile, team == Team.White ? Team.Black : Team.White, targetBoard))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public static bool MovePiece(int startX, int startY, int endX, int endY, ChessBoard targetBoard, bool IgnoreLegality = false)
         {
             foreach (var coord in new int[4] { startX, startY, endX, endY })
             {
                 if (!(coord is >= 0 and < 8))
                     return false;
             }
-            return MovePiece(targetBoard.Board[startX, startY], targetBoard.Board[endX, endY], targetBoard);
+            return MovePiece(targetBoard.Board[startX, startY], targetBoard.Board[endX, endY], targetBoard, IgnoreLegality);
         }
 
-        public static bool MovePiece(BoardSquare start, BoardSquare end, ChessBoard targetBoard)
+        public static bool MovePiece(BoardSquare start, BoardSquare end, ChessBoard targetBoard, bool IgnoreLegality = false)
         {
             if (start.content is null)
                 return false;
-            if (start.content.GetLegalMoves(start, targetBoard).Contains(end) && start.content.Team == GameLogic.CurrentTurnTeam)
+            if ((IgnoreLegality || start.content.GetLegalMoves(start, targetBoard).Contains(end)) && start.content.Team == GameLogic.CurrentTurnTeam)
             {
                 start.content.hasMoved = true;
 
-                GameLogic.CurrentTurnTeam = GameLogic.CurrentTurnTeam == Team.White ? Team.Black : Team.White;
+                Team CurrentTeam = GameLogic.CurrentTurnTeam == Team.White ? Team.Black : Team.White;
+                if (GameLogic.ChessBoard == targetBoard)
+                {
+                    GameLogic.CurrentTurnTeam = CurrentTeam;
+                }
 
                 end.content = start.content;
                 start.content = null;
@@ -66,7 +86,7 @@ namespace CSharpChess.Board
 
                 foreach (var tile in targetBoard.Board)
                 {
-                    if (tile.content is not null && tile.content.Team == GameLogic.CurrentTurnTeam)
+                    if (tile.content is not null && tile.content.Team == CurrentTeam)
                     {
                         tile.content.TurnStartCallback();
                     }

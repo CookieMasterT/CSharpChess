@@ -19,7 +19,22 @@ namespace CSharpChess.Pieces
 
         public List<BoardSquare> GetLegalMoves(BoardSquare ContainingSquare, ChessBoard ContainingBoard)
         {
-            return GetAvailableTiles(ContainingSquare, ContainingBoard);
+            List<BoardSquare> PossibleMoves = GetAvailableTiles(ContainingSquare, ContainingBoard);
+            List<BoardSquare> LegalMoves = [];
+
+            foreach (var Move in PossibleMoves)
+            {
+                // if after doing the move your king will be in danger, then the move is not legal
+                ChessBoard tempBoard = FastCloner.FastCloner.DeepClone(ContainingBoard) ?? new();
+                ChessBoard.MovePiece(ContainingSquare.X, ContainingSquare.Y, Move.X, Move.Y, tempBoard, true);
+                if (ChessBoard.KingInDanger(this.Team, tempBoard))
+                {
+                    continue;
+                }
+                LegalMoves.Add(Move);
+            }
+
+            return LegalMoves;
         }
 
         abstract public List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard);

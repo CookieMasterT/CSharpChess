@@ -30,10 +30,6 @@ namespace CSharpChess.Pieces
             Cant_NonCapturing = 11, // you can't move onto the tile, blocked by enemy and you can't capture like this
             Cant_OutOfBounds = 12, // you can't move onto the tile, the move would land you outside the board
             Cant_BlockedByFriend = 13, // you can't move onto the tile, occupied by a piece that is on the same team
-
-            // todo: implement
-            Cant_KingInDanger = 21, // you can't move beacuse your king is in check, and this move does not help with that
-            Cant_DangerousToKing = 22 // you can't move beacuse the move would put your king in check 
         }
 
         public MoveCheckResult TryAdd(int x, int y, bool CapturingMove = true, bool MustCapture = false)
