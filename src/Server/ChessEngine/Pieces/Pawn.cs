@@ -24,7 +24,11 @@ namespace CSharpChess.Pieces
             if (FirstMoveWorks && !hasMoved)
                 if (MV.TryAdd(0, 2 * direction, CapturingMove: false) == MoveConstructor.MoveCheckResult.Can_VacantTile)
                 {
-                    SpecialMoveActions.Add((MV.GetMoves().Last(), () => { doubleMove = true; }));
+                    SpecialMoveActions.Add((MV.GetMoves().Last(), (ContainingBoard, MovedToTile) =>
+                    {
+                        (Piece.CurrentBoardLookup(ContainingBoard, MovedToTile)?.content as Pawn)?.doubleMove = true;
+                    }
+                    ));
                 }
 
             // capture on diagonals in front of pawn
@@ -36,24 +40,32 @@ namespace CSharpChess.Pieces
             if (leftSquare is not null && leftSquare.content is Pawn pawnL && pawnL.doubleMove && pawnL.Team != this.Team)
             {
                 MV.TryAdd(-1, direction);
-                SpecialMoveActions.Add((MV.GetMoves().Last(), () => { leftSquare.content = null; }));
+                SpecialMoveActions.Add((MV.GetMoves().Last(), (ContainingBoard, _) =>
+                {
+                    Piece.CurrentBoardLookup(ContainingBoard, leftSquare)?.content = null;
+                }
+                ));
             }
             BoardSquare? rightSquare = ContainingBoard.GetSquare(ContainingSquare.X + 1, ContainingSquare.Y);
             if (rightSquare is not null && rightSquare.content is Pawn pawnR && pawnR.doubleMove && pawnR.Team != this.Team)
             {
                 MV.TryAdd(1, direction);
-                SpecialMoveActions.Add((MV.GetMoves().Last(), () => { rightSquare.content = null; }));
+                SpecialMoveActions.Add((MV.GetMoves().Last(), (ContainingBoard, _) =>
+                {
+                    Piece.CurrentBoardLookup(ContainingBoard, rightSquare)?.content = null;
+                }
+                ));
             }
             return MV.GetMoves();
         }
         private bool doubleMove = false;
-        private readonly List<(BoardSquare, Action)> SpecialMoveActions = [];
-        public override void SpecialMoveCallback(BoardSquare tile)
+        private readonly List<(BoardSquare, Action<ChessBoard, BoardSquare>)> SpecialMoveActions = [];
+        public override void SpecialMoveCallback(BoardSquare tile, ChessBoard board)
         {
             var specialMove = SpecialMoveActions.FirstOrDefault(move => move.Item1 == tile);
             if (specialMove != default)
             {
-                specialMove.Item2();
+                specialMove.Item2(board, tile);
             }
         }
 

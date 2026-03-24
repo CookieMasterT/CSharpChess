@@ -39,7 +39,19 @@ namespace CSharpChess.Pieces
 
         abstract public List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard);
 
-        public virtual void SpecialMoveCallback(BoardSquare tile) { }
+        public virtual void SpecialMoveCallback(BoardSquare tile, ChessBoard board) { }
+
+        public static BoardSquare? CurrentBoardLookup(ChessBoard ContainingBoard, BoardSquare NeededSquare)
+        {
+            foreach (var Square in ContainingBoard.Board)
+            {
+                if (Square == NeededSquare)
+                {
+                    return Square;
+                }
+            }
+            return null;
+        }
 
         public virtual void TurnStartCallback() { }
     }

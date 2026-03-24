@@ -82,7 +82,7 @@ namespace CSharpChess.Board
 
                 end.content = start.content;
                 start.content = null;
-                end.content.SpecialMoveCallback(end);
+                end.content.SpecialMoveCallback(end, targetBoard);
 
                 foreach (var tile in targetBoard.Board)
                 {

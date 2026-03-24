@@ -47,10 +47,11 @@ namespace CSharpChess.Pieces
                                 {
                                     var castleMoveSquare = tilesToCheck.Last();
                                     MV.TryAdd(X - ContainingSquare.X - dir, 0);
-                                    SpecialMoveActions.Add((castleMoveSquare, () =>
+                                    SpecialMoveActions.Add((castleMoveSquare, (ContainingBoard) =>
                                     {
-                                        ContainingBoard.GetSquare(castleMoveSquare.X - dir, castleMoveSquare.Y)?.content = currentSquare.content;
-                                        currentSquare.content = null;
+                                        currentSquare = Piece.CurrentBoardLookup(ContainingBoard, currentSquare);
+                                        ContainingBoard.GetSquare(castleMoveSquare.X - dir, castleMoveSquare.Y)?.content = currentSquare?.content;
+                                        currentSquare?.content = null;
                                     }));
                                 }
                                 break;
@@ -78,13 +79,13 @@ namespace CSharpChess.Pieces
             return true;
         }
 
-        private readonly List<(BoardSquare, Action)> SpecialMoveActions = [];
-        public override void SpecialMoveCallback(BoardSquare tile)
+        private readonly List<(BoardSquare, Action<ChessBoard>)> SpecialMoveActions = [];
+        public override void SpecialMoveCallback(BoardSquare tile, ChessBoard board)
         {
             var specialMove = SpecialMoveActions.FirstOrDefault(move => move.Item1 == tile);
             if (specialMove != default)
             {
-                specialMove.Item2();
+                specialMove.Item2(board);
             }
         }
     }
