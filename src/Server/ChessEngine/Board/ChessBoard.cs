@@ -18,6 +18,7 @@ namespace CSharpChess.Board
         }
         BoardSquare[,] _board;
         public BoardSquare[,] Board { get => _board; private set => _board = value; }
+        public List<string> MoveHistory = [];
 
         public BoardSquare? GetSquare(int x, int y)
         {
@@ -80,8 +81,13 @@ namespace CSharpChess.Board
                     GameLogic.CurrentTurnTeam = CurrentTeam;
                 }
 
+                bool wasCapturing = false;
+                if (end.content is not null)
+                    wasCapturing = true;
+
                 end.content = start.content;
                 start.content = null;
+
                 end.content.SpecialMoveCallback(end, targetBoard);
 
                 foreach (var tile in targetBoard.Board)
@@ -92,6 +98,7 @@ namespace CSharpChess.Board
                     }
                 }
 
+                targetBoard.MoveHistory.Add(ChessNotation.CreateNotation(end.content, end, wasCapturing));
                 return true;
             }
             return false;
