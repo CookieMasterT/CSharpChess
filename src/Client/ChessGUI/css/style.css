@@ -20,6 +20,11 @@ html {
   --board-black: #d18b47;
   --board-white-glow: #ffe682;
   --board-black-glow: #e8c556;
+  --chess-border-color: #dadada;
+  --chess-bg-odd: #f4f4f4;
+  --chess-bg-even: #dddddd;
+  --chess-text-number: #424242;
+  --chess-text-move: #333333;
 }
 
 /*
@@ -45,6 +50,14 @@ img {
 /* ==========================================================================
    Custom styles
    ========================================================================== */
+
+/*
+* Main game window styles
+*/
+
+#Game {
+  display: flex;
+}
 
 /*
 * Chess board styles
@@ -126,4 +139,46 @@ table * {
 .unavailable {
   pointer-events: none;
   opacity: 0.5;
+}
+
+/*
+* Chess move history styles
+*/
+
+.chess-history-table {
+  width: 100%;
+  max-width: 300px;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+.chess-history-table tr {
+  border-bottom: 1px solid var(--chess-border-color);
+}
+
+.chess-history-table tr:nth-child(odd) {
+  background-color: var(--chess-bg-odd);
+}
+
+.chess-history-table tr:nth-child(even) {
+  background-color: var(--chess-bg-even);
+}
+
+.chess-history-table td {
+  padding: 8px 12px;
+}
+
+.move-number {
+  color: var(--chess-text-number);
+  text-align: right;
+  width: 15%;
+  font-weight: bold;
+}
+
+.move-white,
+.move-black {
+  width: 42.5%;
+  min-width: 30px;
+  color: var(--chess-text-move);
 }

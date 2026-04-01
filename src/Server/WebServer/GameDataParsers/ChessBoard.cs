@@ -7,7 +7,8 @@ namespace WebServer.GameDataParsers
     {
         public static string GetJson()
         {
-            var json = new JArray();
+            var json = new JObject();
+            var board = new JArray();
             for (int x = 0; x < 8; x++)
             {
                 var rank = new JArray();
@@ -27,8 +28,10 @@ namespace WebServer.GameDataParsers
                     str += (tile.content?.Name ?? ChessNotation.EmptySquare);
                     rank.Add(str);
                 }
-                json.Add(rank);
+                board.Add(rank);
             }
+            json.Add("board", board);
+            json.Add("moveHistory", new JArray(GameLogic.ChessBoard.MoveHistory));
             return json.ToString();
         }
     }

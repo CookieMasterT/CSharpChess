@@ -11,7 +11,8 @@ let TempListeners = [];
 
 export async function InitChessBoard() {
   let board = await WaitForInfo("boardState")
-  BuildChessBoard(board);
+  BuildChessBoard(board["board"]);
+  ShowMoveHistory(board["moveHistory"]);
 
   let team = await WaitForInfo("currentTeam");
   document.getElementById("title").innerHTML = `It is currently: ${team["team"]}'s turn`;
@@ -77,6 +78,29 @@ function BuildChessBoard(board_array) {
   html += `</table>`;
 
   board.innerHTML = html;
+}
+
+function ShowMoveHistory(move_array) {
+  console.log(move_array);
+  let list = document.getElementById("MoveHistory");
+  let html = "<table class=\"chess-history-table\">\n";
+
+  // Iterate through the array in steps of 2 (White and Black)
+  for (let i = 0; i < move_array.length; i += 2) {
+    let moveNumber = (i / 2) + 1;
+    let whiteMove = move_array[i];
+    // If the array has an odd number of moves, the last black move will be empty
+    let blackMove = move_array[i + 1] || "";
+
+    html += "  <tr>\n";
+    html += `    <td class="move-number">${moveNumber}.</td>\n`;
+    html += `    <td class="move-white">${whiteMove}</td>\n`;
+    html += `    <td class="move-black">${blackMove}</td>\n`;
+    html += "  </tr>\n";
+  }
+
+  html += "</table>";
+  list.innerHTML = html;
 }
 
 function AddPieceInteractivity(team) {
