@@ -15,6 +15,7 @@ html {
   color: #222;
   font-size: 1em;
   line-height: 1.4;
+  --TileSize: 50px;
   --board-white: #ffce9e;
   --board-black: #d18b47;
   --board-white-glow: #ffe682;
@@ -58,13 +59,13 @@ table * {
 }
 
 .tile-w, .tile-b {
-  width: 50px;
-  height: 50px;
+  width: var(--TileSize);
+  height: var(--TileSize);
 }
 
 .tile-w img, .tile-b img {
-  width: 50px;
-  height: 50px;
+  width: var(--TileSize);
+  height: var(--TileSize);
 }
 
 .tile-w img.active, .tile-b img.active {
