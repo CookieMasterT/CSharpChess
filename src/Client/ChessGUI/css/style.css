@@ -20,7 +20,7 @@ html {
   --board-black: #d18b47;
   --board-white-glow: #ffe682;
   --board-black-glow: #e8c556;
-  --chess-border-color: #dadada;
+  --chess-border-color: #bdbdbd;
   --chess-bg-odd: #f4f4f4;
   --chess-bg-even: #dddddd;
   --chess-text-number: #424242;
@@ -148,6 +148,11 @@ table * {
 .chess-history-table {
   width: 100%;
   max-width: 300px;
+  max-height: 440px;
+  margin-left: 20px;
+  overflow: scroll;
+  display: flex;
+  flex-direction: column-reverse;
   border-collapse: collapse;
   font-family: Arial, sans-serif;
   font-size: 14px;
