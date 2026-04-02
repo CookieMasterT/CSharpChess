@@ -1,5 +1,6 @@
 ﻿using CSharpChess.Board;
 using CSharpChess.Game;
+using CSharpChess.Pieces.Helpers;
 
 namespace CSharpChess.Pieces
 {

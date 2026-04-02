@@ -1,5 +1,6 @@
 ﻿using CSharpChess.Board;
 using CSharpChess.Game;
+using CSharpChess.Pieces.Helpers.SpecialMoves;
 
 namespace CSharpChess.Pieces
 {
@@ -39,7 +40,7 @@ namespace CSharpChess.Pieces
 
         abstract public List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard);
 
-        public virtual void SpecialMoveCallback(BoardSquare tile, ChessBoard board) { }
+        public virtual SpecialMoveInfo SpecialMoveCallback(BoardSquare tile, ChessBoard board) { return new NormalMove(); }
 
         public static BoardSquare? CurrentBoardLookup(ChessBoard ContainingBoard, BoardSquare NeededSquare)
         {

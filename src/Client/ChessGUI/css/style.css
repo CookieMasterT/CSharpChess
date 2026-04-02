@@ -184,6 +184,6 @@ table * {
 .move-white,
 .move-black {
   width: 42.5%;
-  min-width: 30px;
+  min-width: 40px;
   color: var(--chess-text-move);
 }

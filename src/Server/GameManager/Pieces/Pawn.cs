@@ -1,5 +1,7 @@
 ﻿using CSharpChess.Board;
 using CSharpChess.Game;
+using CSharpChess.Pieces.Helpers;
+using CSharpChess.Pieces.Helpers.SpecialMoves;
 
 namespace CSharpChess.Pieces
 {
@@ -27,6 +29,7 @@ namespace CSharpChess.Pieces
                     SpecialMoveActions.Add((MV.GetMoves().Last(), (ContainingBoard, MovedToTile) =>
                     {
                         (Piece.CurrentBoardLookup(ContainingBoard, MovedToTile)?.content as Pawn)?.doubleMove = true;
+                        return new NormalMove();
                     }
                     ));
                 }
@@ -43,6 +46,7 @@ namespace CSharpChess.Pieces
                 SpecialMoveActions.Add((MV.GetMoves().Last(), (ContainingBoard, _) =>
                 {
                     Piece.CurrentBoardLookup(ContainingBoard, leftSquare)?.content = null;
+                    return new EnPassant();
                 }
                 ));
             }
@@ -53,20 +57,22 @@ namespace CSharpChess.Pieces
                 SpecialMoveActions.Add((MV.GetMoves().Last(), (ContainingBoard, _) =>
                 {
                     Piece.CurrentBoardLookup(ContainingBoard, rightSquare)?.content = null;
+                    return new EnPassant();
                 }
                 ));
             }
             return MV.GetMoves();
         }
         private bool doubleMove = false;
-        private readonly List<(BoardSquare, Action<ChessBoard, BoardSquare>)> SpecialMoveActions = [];
-        public override void SpecialMoveCallback(BoardSquare tile, ChessBoard board)
+        private readonly List<(BoardSquare, Func<ChessBoard, BoardSquare, SpecialMoveInfo>)> SpecialMoveActions = [];
+        public override SpecialMoveInfo SpecialMoveCallback(BoardSquare tile, ChessBoard board)
         {
             var specialMove = SpecialMoveActions.FirstOrDefault(move => move.Item1 == tile);
             if (specialMove != default)
             {
-                specialMove.Item2(board, tile);
+                return specialMove.Item2(board, tile);
             }
+            return new NormalMove();
         }
 
         public override void TurnStartCallback()

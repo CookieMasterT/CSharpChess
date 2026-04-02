@@ -1,6 +1,6 @@
 ﻿using CSharpChess.Board;
 
-namespace CSharpChess.Pieces
+namespace CSharpChess.Pieces.Helpers
 {
     internal class MoveConstructor(Piece MoveInitiator, BoardSquare SourceTile, ChessBoard TargetBoard)
     {

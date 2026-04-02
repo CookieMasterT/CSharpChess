@@ -29,11 +29,18 @@ namespace CSharpChess.Game
         public const string Check = "+";
         public const string Checkmate = "#";
 
-        public static string CreateNotation(Piece movingPiece, BoardSquare destination, bool capturingMove, bool opponentHasLegalMoves, bool kingInDanger)
+        public static string CreateNotation(Piece movingPiece, BoardSquare destination, BoardSquare departure, bool capturingMove, bool opponentHasLegalMoves, bool kingInDanger)
         {
             string notation = string.Empty;
+
             // The piece name via single letter or empty string for pawn
             notation += movingPiece.Name;
+
+            // If the move is a pawn move and it's a capture, identify the pawn by its departure file
+            if (movingPiece is Pawn && capturingMove)
+            {
+                notation += departure.File;
+            }
 
             // Add capture symbol if it's a capturing move
             notation += capturingMove ? Capture : "";

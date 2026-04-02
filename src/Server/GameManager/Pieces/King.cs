@@ -1,5 +1,7 @@
 ﻿using CSharpChess.Board;
 using CSharpChess.Game;
+using CSharpChess.Pieces.Helpers;
+using CSharpChess.Pieces.Helpers.SpecialMoves;
 
 namespace CSharpChess.Pieces
 {
@@ -52,7 +54,13 @@ namespace CSharpChess.Pieces
                                         currentSquare = Piece.CurrentBoardLookup(ContainingBoard, currentSquare);
                                         ContainingBoard.GetSquare(castleMoveSquare.X - dir, castleMoveSquare.Y)?.content = currentSquare?.content;
                                         currentSquare?.content = null;
-                                    }));
+
+                                        if (dir == -1)
+                                            return new Castle(CastleSide.QueenSide);
+                                        else
+                                            return new Castle(CastleSide.KingSide);
+                                    }
+                                    ));
                                 }
                                 break;
                             }
@@ -79,14 +87,15 @@ namespace CSharpChess.Pieces
             return true;
         }
 
-        private readonly List<(BoardSquare, Action<ChessBoard>)> SpecialMoveActions = [];
-        public override void SpecialMoveCallback(BoardSquare tile, ChessBoard board)
+        private readonly List<(BoardSquare, Func<ChessBoard, SpecialMoveInfo>)> SpecialMoveActions = [];
+        public override SpecialMoveInfo SpecialMoveCallback(BoardSquare tile, ChessBoard board)
         {
             var specialMove = SpecialMoveActions.FirstOrDefault(move => move.Item1 == tile);
             if (specialMove != default)
             {
-                specialMove.Item2(board);
+                return specialMove.Item2(board);
             }
+            return new NormalMove();
         }
     }
 }

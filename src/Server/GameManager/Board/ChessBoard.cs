@@ -1,5 +1,6 @@
 ﻿using CSharpChess.Game;
 using CSharpChess.Pieces;
+using CSharpChess.Pieces.Helpers.SpecialMoves;
 
 namespace CSharpChess.Board
 {
@@ -103,7 +104,7 @@ namespace CSharpChess.Board
                 end.content = start.content;
                 start.content = null;
 
-                end.content.SpecialMoveCallback(end, targetBoard);
+                var MoveType = end.content.SpecialMoveCallback(end, targetBoard);
 
                 foreach (var tile in targetBoard.Board)
                 {
@@ -113,7 +114,25 @@ namespace CSharpChess.Board
                     }
                 }
 
-                targetBoard.MoveHistory.Add(ChessNotation.CreateNotation(end.content, end, wasCapturing, HasLegalMoves(CurrentTeam, targetBoard), KingInDanger(CurrentTeam, targetBoard)));
+                if (MoveType is EnPassant)
+                {
+                    wasCapturing = true;
+                }
+
+                if (MoveType is Castle)
+                {
+                    if (MoveType is Castle { CastleSide: CastleSide.KingSide })
+                    {
+                        targetBoard.MoveHistory.Add(ChessNotation.KingCastle);
+                    }
+                    else
+                    {
+                        targetBoard.MoveHistory.Add(ChessNotation.QueenCastle);
+                    }
+                }
+                else
+                    targetBoard.MoveHistory.Add(ChessNotation.CreateNotation(end.content, end, start, wasCapturing, HasLegalMoves(CurrentTeam, targetBoard), KingInDanger(CurrentTeam, targetBoard)));
+
                 return true;
             }
             return false;
