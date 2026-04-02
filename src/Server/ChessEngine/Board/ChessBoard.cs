@@ -57,6 +57,21 @@ namespace CSharpChess.Board
             return false;
         }
 
+        public static bool HasLegalMoves(Team team, ChessBoard targetBoard)
+        {
+            foreach (var tile in targetBoard.Board)
+            {
+                if (tile.content is not null && tile.content.Team == team)
+                {
+                    if (tile.content.GetLegalMoves(tile, targetBoard).Count > 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         public static bool MovePiece(int startX, int startY, int endX, int endY, ChessBoard targetBoard, bool IgnoreLegality = false)
         {
             foreach (var coord in new int[4] { startX, startY, endX, endY })
@@ -98,7 +113,7 @@ namespace CSharpChess.Board
                     }
                 }
 
-                targetBoard.MoveHistory.Add(ChessNotation.CreateNotation(end.content, end, wasCapturing));
+                targetBoard.MoveHistory.Add(ChessNotation.CreateNotation(end.content, end, wasCapturing, HasLegalMoves(CurrentTeam, targetBoard), KingInDanger(CurrentTeam, targetBoard)));
                 return true;
             }
             return false;
