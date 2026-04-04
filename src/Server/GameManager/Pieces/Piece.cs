@@ -38,7 +38,7 @@ namespace CSharpChess.Pieces
             return LegalMoves;
         }
 
-        abstract public List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard);
+        abstract public List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard, bool OnlyAttacks = false);
 
         public virtual SpecialMoveInfo SpecialMoveCallback(BoardSquare tile, ChessBoard board) { return new NormalMove(); }
 

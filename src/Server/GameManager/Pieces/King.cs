@@ -14,7 +14,7 @@ namespace CSharpChess.Pieces
 
         public override string Name { get => ChessNotation.King; }
 
-        public override List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard)
+        public override List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard, bool OnlyAttacks = false)
         {
             var MV = new MoveConstructor(this, ContainingSquare, ContainingBoard);
 
@@ -28,46 +28,49 @@ namespace CSharpChess.Pieces
             }
 
             // check both sides for a rook that hasn't moved, and if the tiles between them are empty, add the castle move
-            if (!hasMoved)
+            if (!OnlyAttacks)
             {
-                int[] directions = [-1, 1];
-                foreach (var dir in directions)
+                if (!hasMoved && !ChessBoard.KingInDanger(this.Team, ContainingBoard))
                 {
-                    int X = ContainingSquare.X;
-                    int Y = ContainingSquare.Y;
-                    List<BoardSquare> tilesToCheck = [];
-                    while (true)
+                    int[] directions = [-1, 1];
+                    foreach (var dir in directions)
                     {
-                        X += dir;
-                        var currentSquare = ContainingBoard.GetSquare(X, Y);
-                        if (currentSquare != null)
+                        int X = ContainingSquare.X;
+                        int Y = ContainingSquare.Y;
+                        List<BoardSquare> tilesToCheck = [];
+                        while (true)
                         {
-
-                            if (currentSquare.content is Rook rook && !rook.hasMoved)
+                            X += dir;
+                            var currentSquare = ContainingBoard.GetSquare(X, Y);
+                            if (currentSquare != null)
                             {
-                                if (CheckTilesForCastle(tilesToCheck))
-                                {
-                                    var castleMoveSquare = tilesToCheck[1];
-                                    MV.TryAdd(dir * 2, 0);
-                                    SpecialMoveActions.Add((castleMoveSquare, (ContainingBoard) =>
-                                    {
-                                        currentSquare = Piece.CurrentBoardLookup(ContainingBoard, currentSquare);
-                                        ContainingBoard.GetSquare(castleMoveSquare.X - dir, castleMoveSquare.Y)?.content = currentSquare?.content;
-                                        currentSquare?.content = null;
 
-                                        if (dir == -1)
-                                            return new Castle(CastleSide.QueenSide);
-                                        else
-                                            return new Castle(CastleSide.KingSide);
+                                if (currentSquare.content is Rook rook && !rook.hasMoved)
+                                {
+                                    if (CheckTilesForCastle(tilesToCheck[..1], this.Team, ContainingBoard))
+                                    {
+                                        var castleMoveSquare = tilesToCheck[1];
+                                        MV.TryAdd(dir * 2, 0);
+                                        SpecialMoveActions.Add((castleMoveSquare, (ContainingBoard) =>
+                                        {
+                                            currentSquare = Piece.CurrentBoardLookup(ContainingBoard, currentSquare);
+                                            ContainingBoard.GetSquare(castleMoveSquare.X - dir, castleMoveSquare.Y)?.content = currentSquare?.content;
+                                            currentSquare?.content = null;
+
+                                            if (dir == -1)
+                                                return new Castle(CastleSide.QueenSide);
+                                            else
+                                                return new Castle(CastleSide.KingSide);
+                                        }
+                                        ));
                                     }
-                                    ));
+                                    break;
                                 }
-                                break;
+                                tilesToCheck.Add(currentSquare);
                             }
-                            tilesToCheck.Add(currentSquare);
+                            else
+                                break;
                         }
-                        else
-                            break;
                     }
                 }
             }
@@ -75,11 +78,11 @@ namespace CSharpChess.Pieces
             return MV.GetMoves();
         }
 
-        private static bool CheckTilesForCastle(List<BoardSquare> tiles)
+        private static bool CheckTilesForCastle(List<BoardSquare> tiles, Team team, ChessBoard ContainingBoard)
         {
             foreach (var tile in tiles)
             {
-                if (tile.content is not null)
+                if (tile.content is not null || ChessBoard.IsSquareAttacked(tile, team == Team.White ? Team.Black : Team.White, ContainingBoard))
                 {
                     return false;
                 }

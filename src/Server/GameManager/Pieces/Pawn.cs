@@ -14,11 +14,13 @@ namespace CSharpChess.Pieces
 
         public override string Name { get => ChessNotation.Pawn; }
 
-        public override List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard)
+        public override List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard, bool OnlyAttacks = false)
         {
             var MV = new MoveConstructor(this, ContainingSquare, ContainingBoard);
             int direction = (this.Team == Team.White) ? 1 : -1; // Black pawns move down the y axis (-1) instead of up the y axis (+1)
 
+            if (!OnlyAttacks)
+            {
             // move forward
             bool FirstMoveWorks = MV.TryAdd(0, direction, CapturingMove: false) == MoveConstructor.MoveCheckResult.Can_VacantTile;
 
@@ -33,6 +35,7 @@ namespace CSharpChess.Pieces
                     }
                     ));
                 }
+            }
 
             // capture on diagonals in front of pawn
             MV.TryAdd(1, direction, MustCapture: true);

@@ -13,7 +13,7 @@ namespace CSharpChess.Pieces
 
         public override string Name { get => ChessNotation.Knight; }
 
-        public override List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard)
+        public override List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard, bool OnlyAttacks = false)
         {
             var MV = new MoveConstructor(this, ContainingSquare, ContainingBoard);
 

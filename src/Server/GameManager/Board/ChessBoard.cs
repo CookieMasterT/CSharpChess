@@ -34,7 +34,7 @@ namespace CSharpChess.Board
             {
                 if (tile.content is not null && tile.content.Team == byTeam)
                 {
-                    if (tile.content.GetAvailableTiles(tile, targetBoard).Contains(square))
+                    if (tile.content.GetAvailableTiles(tile, targetBoard, true).Contains(square))
                     {
                         return true;
                     }
