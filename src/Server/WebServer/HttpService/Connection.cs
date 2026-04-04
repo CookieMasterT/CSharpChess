@@ -8,11 +8,11 @@ namespace WebServer.HttpService
     {
         public static async Task StartConnection(string uri)
         {
+            Console.WriteLine($"Listening on {uri}");
+
             var listener = new HttpListener();
             listener.Prefixes.Add(uri);
             listener.Start();
-
-            Console.WriteLine($"Listening on {uri}");
 
             while (true)
             {
