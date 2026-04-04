@@ -38,6 +38,11 @@ export async function SetUpConnection() {
   connection.addEventListener("error", () => {
     document.getElementById("title").innerHTML = `Cannot connect to server (is it turned on?)`;
     document.getElementById("ChessBoard").classList.add("unavailable");
+    document.querySelectorAll("*").forEach((e) => {
+      e.classList.remove("move-hint-origin")
+      e.classList.remove("dragging")
+    });
+    document.body.style.cursor = "";
   });
 
   if (connection.readyState !== WebSocket.OPEN) {
