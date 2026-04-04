@@ -28,7 +28,7 @@ export function AddPieceDragging() {
   })
 }
 
-function BuildChessBoard(board_array) {
+export function BuildChessBoard(board_array) {
   // console.log("Building chessboard with: ", board_array);
   document.body.style.cursor = "";
   let board = document.getElementById("ChessBoard");
@@ -45,20 +45,22 @@ function BuildChessBoard(board_array) {
                   class=\"tile-${(x % 2 + y % 2) % 2 === 1 ? "w" : "b"}"
                   id="tile-${x};${y}">`;
 
-        let tile = board_array[x][y];
-        if (tile !== "U") {
-          let color = tile[0];
-          let type;
-          if (tile.length === 1)
-            type = "P";
-          else
-            type = tile[1];
+        if (board_array != null) {
+          let tile = board_array[x][y];
+          if (tile !== "U") {
+            let color = tile[0];
+            let type;
+            if (tile.length === 1)
+              type = "P";
+            else
+              type = tile[1];
 
-          html += `<img
+            html += `<img
                     class="piece ${color === 'w' ? 'White' : 'Black'}"
                     draggable="false"
                     id="piece-${x};${y}"
                     src="img/${ImageFileNameDict[type]}-${color}.svg" alt="${tile}"/>`;
+          }
         }
         html += `</td>`;
       } else {
