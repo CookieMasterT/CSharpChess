@@ -47,8 +47,8 @@ namespace CSharpChess.Pieces
                             {
                                 if (CheckTilesForCastle(tilesToCheck))
                                 {
-                                    var castleMoveSquare = tilesToCheck.Last();
-                                    MV.TryAdd(X - ContainingSquare.X - dir, 0);
+                                    var castleMoveSquare = tilesToCheck[1];
+                                    MV.TryAdd(dir * 2, 0);
                                     SpecialMoveActions.Add((castleMoveSquare, (ContainingBoard) =>
                                     {
                                         currentSquare = Piece.CurrentBoardLookup(ContainingBoard, currentSquare);
