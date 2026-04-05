@@ -35,9 +35,6 @@ namespace WebServer.HttpService
                     });
                     await ClientManager.SendMessageAll("refreshBoard");
                     break;
-                case "currentTeam":
-                    json = GDP.CurrentTeam.GetJson();
-                    break;
             }
             return json;
         }

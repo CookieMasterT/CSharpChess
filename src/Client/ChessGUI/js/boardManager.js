@@ -11,11 +11,12 @@ let TempListeners = [];
 
 export async function InitChessBoard() {
   let board = await WaitForInfo("boardState")
+  console.log(board);
   BuildChessBoard(board["board"]);
   ShowMoveHistory(board["moveHistory"]);
+  let team = board["currentTeam"];
 
-  let team = await WaitForInfo("currentTeam");
-  document.getElementById("title").innerHTML = `It is currently: ${team["team"]}'s turn`;
+  document.getElementById("title").innerHTML = `It is currently: ${team}'s turn`;
   AddPieceInteractivity(team);
 }
 
@@ -106,7 +107,7 @@ function ShowMoveHistory(move_array) {
 }
 
 function AddPieceInteractivity(team) {
-  let Pieces = document.querySelectorAll(`.piece.${team["team"]}`);
+  let Pieces = document.querySelectorAll(`.piece.${team}`);
   for (let piece of Pieces) {
     piece.addEventListener('mousedown', (e) => {
       e.stopPropagation();

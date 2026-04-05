@@ -71,6 +71,12 @@ namespace CSharpChess.Pieces
         private readonly List<(BoardSquare, Func<ChessBoard, BoardSquare, SpecialMoveInfo>)> SpecialMoveActions = [];
         public override SpecialMoveInfo SpecialMoveCallback(BoardSquare tile, ChessBoard board)
         {
+            if (tile.Y == 0 && this.Team == Team.Black || tile.Y == 7 && this.Team == Team.White)
+            {
+                tile.content = new Queen(this.Team);
+                return new Promotion(PromotionPiece.Queen);
+            }
+
             var specialMove = SpecialMoveActions.FirstOrDefault(move => move.Item1 == tile);
             if (specialMove != default)
             {

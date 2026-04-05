@@ -31,6 +31,7 @@ namespace WebServer.GameDataParsers
                 board.Add(rank);
             }
             json.Add("board", board);
+            json.Add("currentTeam", GameLogic.CurrentTurnTeam == Team.White ? "White" : "Black");
             json.Add("moveHistory", new JArray(GameLogic.ChessBoard.MoveHistory));
             return json.ToString();
         }

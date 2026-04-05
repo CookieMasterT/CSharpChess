@@ -6,6 +6,8 @@ namespace CSharpChess.Game
 {
     public class ChessNotation
     {
+        // IMPORTANT: Some of the variables here are used to name data sent over to the client, so changing them may break client functionality if not updated on the client as well.
+
         public static readonly char[] LegalRankNames = ['1', '2', '3', '4', '5', '6', '7', '8'];
         public static readonly char[] LegalFileNames = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
@@ -30,13 +32,11 @@ namespace CSharpChess.Game
         public const string Check = "+";
         public const string Checkmate = "#";
 
+        public const string Promotion = "=";
+
         public static string CreateNotation(Piece movingPiece, BoardSquare destination, BoardSquare departure, bool capturingMove, bool opponentHasLegalMoves, bool opponentKingInDanger, SpecialMoveInfo extras)
         {
-            if (extras is EnPassant)
-            {
-                capturingMove = true;
-            }
-
+            // If the move is a castle, return the appropriate castle notation
             if (extras is Castle)
             {
                 if (extras is Castle { CastleSide: CastleSide.KingSide })
@@ -47,6 +47,12 @@ namespace CSharpChess.Game
                 {
                     return ChessNotation.QueenCastle;
                 }
+            }
+
+            // If the move is a promotion, then the piece being moved is technically still a pawn.
+            if (extras is Promotion)
+            {
+                movingPiece = new Pawn(movingPiece.Team);
             }
 
             string notation = string.Empty;
@@ -61,10 +67,34 @@ namespace CSharpChess.Game
             }
 
             // Add capture symbol if it's a capturing move
-            notation += capturingMove ? Capture : "";
+            notation += capturingMove || extras is EnPassant ? Capture : "";
 
             // Add destination square in algebraic notation (e.g., e4)
             notation += destination;
+
+            // If the move includes a promotion, add the promoted piece type
+            if (extras is Promotion)
+            {
+                notation += Promotion;
+                switch (extras)
+                {
+                    case Promotion { PromotionPiece: PromotionPiece.Queen }:
+                        notation += Queen;
+                        break;
+
+                    case Promotion { PromotionPiece: PromotionPiece.Rook }:
+                        notation += Rook;
+                        break;
+
+                    case Promotion { PromotionPiece: PromotionPiece.Bishop }:
+                        notation += Bishop;
+                        break;
+
+                    case Promotion { PromotionPiece: PromotionPiece.Knight }:
+                        notation += Knight;
+                        break;
+                }
+            }
 
             // Add check or checkmate symbol if applicable
             if (opponentKingInDanger && !opponentHasLegalMoves)
