@@ -17,6 +17,7 @@ namespace CSharpChess.Pieces
         public override List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard, bool OnlyAttacks = false)
         {
             var MV = new MoveConstructor(this, ContainingSquare, ContainingBoard);
+            SpecialMoveActions.Clear();
             int direction = (this.Team == Team.White) ? 1 : -1; // Black pawns move down the y axis (-1) instead of up the y axis (+1)
 
             if (!OnlyAttacks)

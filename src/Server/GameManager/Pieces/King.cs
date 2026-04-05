@@ -17,6 +17,7 @@ namespace CSharpChess.Pieces
         public override List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard, bool OnlyAttacks = false)
         {
             var MV = new MoveConstructor(this, ContainingSquare, ContainingBoard);
+            SpecialMoveActions.Clear();
 
             // king moves in a 3x3 on top of itself (any adjacent square)
             for (int i = -1; i <= 1; i++)
