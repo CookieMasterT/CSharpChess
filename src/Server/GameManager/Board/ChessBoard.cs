@@ -114,24 +114,7 @@ namespace CSharpChess.Board
                     }
                 }
 
-                if (MoveType is EnPassant)
-                {
-                    wasCapturing = true;
-                }
-
-                if (MoveType is Castle)
-                {
-                    if (MoveType is Castle { CastleSide: CastleSide.KingSide })
-                    {
-                        targetBoard.MoveHistory.Add(ChessNotation.KingCastle);
-                    }
-                    else
-                    {
-                        targetBoard.MoveHistory.Add(ChessNotation.QueenCastle);
-                    }
-                }
-                else
-                    targetBoard.MoveHistory.Add(ChessNotation.CreateNotation(end.content, end, start, wasCapturing, HasLegalMoves(CurrentTeam, targetBoard), KingInDanger(CurrentTeam, targetBoard)));
+                targetBoard.MoveHistory.Add(ChessNotation.CreateNotation(end.content, end, start, wasCapturing, HasLegalMoves(CurrentTeam, targetBoard), KingInDanger(CurrentTeam, targetBoard), MoveType));
 
                 return true;
             }

@@ -1,5 +1,6 @@
 ﻿using CSharpChess.Board;
 using CSharpChess.Pieces;
+using CSharpChess.Pieces.Helpers.SpecialMoves;
 
 namespace CSharpChess.Game
 {
@@ -29,8 +30,25 @@ namespace CSharpChess.Game
         public const string Check = "+";
         public const string Checkmate = "#";
 
-        public static string CreateNotation(Piece movingPiece, BoardSquare destination, BoardSquare departure, bool capturingMove, bool opponentHasLegalMoves, bool kingInDanger)
+        public static string CreateNotation(Piece movingPiece, BoardSquare destination, BoardSquare departure, bool capturingMove, bool opponentHasLegalMoves, bool opponentKingInDanger, SpecialMoveInfo extras)
         {
+            if (extras is EnPassant)
+            {
+                capturingMove = true;
+            }
+
+            if (extras is Castle)
+            {
+                if (extras is Castle { CastleSide: CastleSide.KingSide })
+                {
+                    return ChessNotation.KingCastle;
+                }
+                else
+                {
+                    return ChessNotation.QueenCastle;
+                }
+            }
+
             string notation = string.Empty;
 
             // The piece name via single letter or empty string for pawn
@@ -49,11 +67,11 @@ namespace CSharpChess.Game
             notation += destination;
 
             // Add check or checkmate symbol if applicable
-            if (kingInDanger && !opponentHasLegalMoves)
+            if (opponentKingInDanger && !opponentHasLegalMoves)
             {
                 notation += Checkmate;
             }
-            else if (kingInDanger)
+            else if (opponentKingInDanger)
             {
                 notation += Check;
             }
