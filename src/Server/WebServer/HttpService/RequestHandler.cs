@@ -35,6 +35,13 @@ namespace WebServer.HttpService
                     });
                     await ClientManager.SendMessageAll("refreshBoard");
                     break;
+                case "movePieceWithPromotion":
+                    DeserializeInfo<MovePieceWithPromotionParams>(requestObj.extraInfo, moveInfo =>
+                    {
+                        GA.MovePieceWithPromotion.Execute(moveInfo);
+                    });
+                    await ClientManager.SendMessageAll("refreshBoard");
+                    break;
             }
             return json;
         }

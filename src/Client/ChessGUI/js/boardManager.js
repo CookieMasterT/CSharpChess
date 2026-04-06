@@ -11,7 +11,6 @@ let TempListeners = [];
 
 export async function InitChessBoard() {
   let board = await WaitForInfo("boardState")
-  console.log(board);
   BuildChessBoard(board["board"]);
   ShowMoveHistory(board["moveHistory"]);
   let team = board["currentTeam"];
@@ -30,7 +29,6 @@ export function AddPieceDragging() {
 }
 
 export function BuildChessBoard(board_array) {
-  // console.log("Building chessboard with: ", board_array);
   document.body.style.cursor = "";
   let board = document.getElementById("ChessBoard");
   let html = "";
@@ -57,7 +55,7 @@ export function BuildChessBoard(board_array) {
               type = tile[1];
 
             html += `<img
-                    class="piece ${color === 'w' ? 'White' : 'Black'}"
+                    class="piece ${color === 'w' ? 'White' : 'Black'} ${type}"
                     draggable="false"
                     id="piece-${x};${y}"
                     src="img/${ImageFileNameDict[type]}-${color}.svg" alt="${tile}"/>`;
@@ -84,7 +82,6 @@ export function BuildChessBoard(board_array) {
 }
 
 function ShowMoveHistory(move_array) {
-  console.log(move_array);
   let list = document.getElementById("MoveHistory");
   let html = "<table class=\"chess-history-table\">\n";
 
@@ -117,7 +114,7 @@ function AddPieceInteractivity(team) {
   }
   if (!bodyEvent) {
     bodyEvent = true;
-    document.body.addEventListener("mousedown", () => RemoveHintHighlights())
+    window.addEventListener("mousedown", () => RemoveHintHighlights())
   }
 }
 
@@ -135,14 +132,22 @@ async function HandlePieceTouch(event) {
     let tileElement = document.getElementById(`tile-${tileX};${tileY}`);
     tileElement.classList.add("move-hint-highlight");
 
-    AddTempListener(tileElement, (e) => {
-      DoMove(PieceX, PieceY, tileX, tileY);
+    let needsPromotion = event.target.classList.contains("P") && (tileY === 0 || tileY === 7);
+    let team = Piece.classList.contains("White") ? "w" : "b"
+
+    let Func = (e) => {
+      if (needsPromotion) {
+        Piece.classList.remove("dragging");
+        Piece.style.display = "none";
+        RemoveHintHighlights(true);
+        document.body.style.cursor = "";
+      }
+      DoMove(PieceX, PieceY, tileX, tileY, needsPromotion, team);
       e.stopPropagation();
-    }, 'mouseup');
-    AddTempListener(tileElement, (e) => {
-      DoMove(PieceX, PieceY, tileX, tileY);
-      e.stopPropagation();
-    }, 'mousedown');
+    }
+
+    AddTempListener(tileElement, Func, 'mouseup');
+    AddTempListener(tileElement, Func, 'mousedown');
   })
 
   Piece.classList.add("dragging");
@@ -160,13 +165,15 @@ function AddTempListener(Element, Func, Type) {
   TempListeners.push([Element, Func, Type]);
 }
 
-function RemoveHintHighlights() {
+function RemoveHintHighlights(partial = false) {
   document.querySelectorAll(".move-hint-highlight").forEach((item) => {
     item.classList.remove("move-hint-highlight");
   })
-  document.querySelectorAll(".move-hint-origin").forEach((item) => {
-    item.classList.remove("move-hint-origin");
-  })
+  if (!partial) {
+    document.querySelectorAll(".move-hint-origin").forEach((item) => {
+      item.classList.remove("move-hint-origin");
+    })
+  }
 
   while (TempListeners.length > 0) {
     let [Element, Func, Type] = TempListeners.pop();
@@ -174,8 +181,89 @@ function RemoveHintHighlights() {
   }
 }
 
-async function DoMove(pieceX, pieceY, tileX, tileY) {
-  console.log(`Moving from: ${pieceX}, ${pieceY} to: ${tileX}, ${tileY}`)
-  await SendData("movePiece", `{"startX": ${pieceX}, "startY": ${pieceY},
+async function DoMove(pieceX, pieceY, tileX, tileY, needsPromotion, team) {
+  if (needsPromotion) {
+    let promotionPiece = await ChoosePromotionPiece(tileX, tileY, team)
+    if (promotionPiece === "") {
+      await InitChessBoard();
+      return;
+    }
+    await SendData("movePieceWithPromotion", `{"startX": ${pieceX}, "startY": ${pieceY},
+                                                "endX": ${tileX}, "endY": ${tileY},
+                                                "promotionPiece": "${promotionPiece}"}`)
+  } else {
+    await SendData("movePiece", `{"startX": ${pieceX}, "startY": ${pieceY},
                                                 "endX": ${tileX}, "endY": ${tileY}}`);
+  }
+}
+
+function ChoosePromotionPiece(x, y, team) {
+  return new Promise((resolve) => {
+    let dialogue = document.getElementById("PromotionChoice");
+
+    let pieces = {
+      "Q": ImageFileNameDict["Q"],
+      "R": ImageFileNameDict["R"],
+      "B": ImageFileNameDict["B"],
+      "N": ImageFileNameDict["N"]
+    };
+
+    let html = `<div class="promotion-menu">`;
+    for (let [choice, pieceName] of Object.entries(pieces)) {
+      html += `
+        <button class="promo-btn" data-choice="${choice}">
+          <img src="img/${pieceName}-${team}.svg" alt="${pieceName}" />
+        </button>
+      `;
+    }
+
+    html += `
+        <button class="promo-btn cancel-btn" data-choice="">&times;</button>
+      </div>
+    `;
+
+    dialogue.innerHTML = html
+
+    let targetTile = document.getElementById(`tile-${x};${y}`).getBoundingClientRect();
+    dialogue.style.display = "block";
+
+    if (y < 4) {
+      document.querySelector(".promotion-menu").style.flexDirection = "column";
+      dialogue.style.left = targetTile.left + "px";
+      dialogue.style.top = targetTile.top + "px";
+    } else {
+      document.querySelector(".promotion-menu").style.flexDirection = "column-reverse";
+      dialogue.style.left = targetTile.left + "px";
+      dialogue.style.top = (targetTile.top - 182) + "px";
+    }
+
+    let buttons = dialogue.querySelectorAll('.promo-btn');
+
+    let cleanup = () => {
+      buttons.forEach(btn => btn.removeEventListener('click', clickHandler));
+      window.removeEventListener('mousedown', outsideClickHandler);
+      dialogue.innerHTML = "";
+      dialogue.style.display = "none";
+    };
+
+    let clickHandler = (event) => {
+      const choice = event.currentTarget.getAttribute('data-choice');
+      cleanup();
+      resolve(choice);
+    };
+
+    let outsideClickHandler = (event) => {
+      if (!dialogue.contains(event.target)) {
+        cleanup();
+        resolve("");
+      }
+    };
+
+    buttons.forEach(btn => btn.addEventListener('click', clickHandler));
+    window.addEventListener('mousedown', outsideClickHandler);
+    let Pieces = document.querySelectorAll(`.piece`);
+    for (let piece of Pieces) {
+      piece.style.pointerEvents = "none";
+    }
+  });
 }

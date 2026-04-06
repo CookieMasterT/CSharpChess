@@ -73,17 +73,17 @@ namespace CSharpChess.Board
             return false;
         }
 
-        public static bool MovePiece(int startX, int startY, int endX, int endY, ChessBoard targetBoard, bool IgnoreLegality = false)
+        public static bool MovePiece(int startX, int startY, int endX, int endY, ChessBoard targetBoard, bool IgnoreLegality = false, string? promotionPiece = null)
         {
             foreach (var coord in new int[4] { startX, startY, endX, endY })
             {
                 if (!(coord is >= 0 and < 8))
                     return false;
             }
-            return MovePiece(targetBoard.Board[startX, startY], targetBoard.Board[endX, endY], targetBoard, IgnoreLegality);
+            return MovePiece(targetBoard.Board[startX, startY], targetBoard.Board[endX, endY], targetBoard, IgnoreLegality, promotionPiece);
         }
 
-        public static bool MovePiece(BoardSquare start, BoardSquare end, ChessBoard targetBoard, bool IgnoreLegality = false)
+        public static bool MovePiece(BoardSquare start, BoardSquare end, ChessBoard targetBoard, bool IgnoreLegality = false, string? promotionPiece = null)
         {
             if (start.content is null)
                 return false;
@@ -104,7 +104,7 @@ namespace CSharpChess.Board
                 end.content = start.content;
                 start.content = null;
 
-                var MoveType = end.content.SpecialMoveCallback(end, targetBoard);
+                var MoveType = end.content.SpecialMoveCallback(end, targetBoard, promotionPiece);
 
                 foreach (var tile in targetBoard.Board)
                 {

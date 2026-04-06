@@ -2,7 +2,7 @@ import {InitChessBoard} from "./boardManager.js";
 
 const url = "ws://localhost:54321/";
 let connection;
-const supportedRequests = ["identification", "boardState", "pieceMoves", "movePiece", "currentTeam"];
+const supportedRequests = ["identification", "boardState", "pieceMoves", "movePiece", "movePieceWithPromotion", "currentTeam"];
 
 export async function SendData(type, extraInfo = "") {
   if (supportedRequests.includes(type)) {

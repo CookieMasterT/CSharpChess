@@ -40,7 +40,7 @@ namespace CSharpChess.Pieces
 
         abstract public List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard, bool OnlyAttacks = false);
 
-        public virtual SpecialMoveInfo SpecialMoveCallback(BoardSquare tile, ChessBoard board) { return new NormalMove(); }
+        public virtual SpecialMoveInfo SpecialMoveCallback(BoardSquare tile, ChessBoard board, string? promotionPiece = null) { return new NormalMove(); }
 
         public static BoardSquare? CurrentBoardLookup(ChessBoard ContainingBoard, BoardSquare NeededSquare)
         {

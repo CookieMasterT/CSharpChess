@@ -69,12 +69,26 @@ namespace CSharpChess.Pieces
         }
         private bool doubleMove = false;
         private readonly List<(BoardSquare, Func<ChessBoard, BoardSquare, SpecialMoveInfo>)> SpecialMoveActions = [];
-        public override SpecialMoveInfo SpecialMoveCallback(BoardSquare tile, ChessBoard board)
+        public override SpecialMoveInfo SpecialMoveCallback(BoardSquare tile, ChessBoard board, string? promotionPiece = null)
         {
             if (tile.Y == 0 && this.Team == Team.Black || tile.Y == 7 && this.Team == Team.White)
             {
-                tile.content = new Queen(this.Team);
-                return new Promotion(PromotionPiece.Queen);
+                switch(promotionPiece)
+                {
+                    case ChessNotation.Queen:
+                        tile.content = new Queen(this.Team);
+                        return new Promotion(PromotionPiece.Queen);
+                    case ChessNotation.Rook:
+                        tile.content = new Rook(this.Team);
+                        return new Promotion(PromotionPiece.Rook);
+                    case ChessNotation.Bishop:
+                        tile.content = new Bishop(this.Team);
+                        return new Promotion(PromotionPiece.Bishop);
+                    case ChessNotation.Knight:
+                        tile.content = new Knight(this.Team);
+                        return new Promotion(PromotionPiece.Knight);
+                }
+                
             }
 
             var specialMove = SpecialMoveActions.FirstOrDefault(move => move.Item1 == tile);

@@ -187,3 +187,64 @@ table * {
   min-width: 40px;
   color: var(--chess-text-move);
 }
+
+/*
+* Promotion dialogue styles
+*/
+
+#PromotionChoice {
+  position: absolute;
+  z-index: 100;
+  display: none;
+}
+
+.promotion-menu {
+  display: flex;
+  flex-direction: column;
+  width: var(--TileSize);
+  background-color: #f8f8f8;
+  border: 2px solid #333;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.promo-btn {
+  width: var(--TileSize);
+  height: var(--TileSize);
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background-color: transparent;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.2s ease;
+}
+
+.promo-btn:last-child {
+  border-bottom: none;
+}
+
+.promo-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.promo-btn img {
+  width: 80%;
+  height: 80%;
+  pointer-events: none;
+}
+
+.cancel-btn {
+  height: calc(var(--TileSize) * 0.6);
+  background-color: #ffd6d6;
+  color: #cc0000;
+  font-size: calc(var(--TileSize) * 0.5);
+  font-weight: bold;
+}
+
+.cancel-btn:hover {
+  background-color: #ffb3b3;
+}
