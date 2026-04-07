@@ -2,7 +2,7 @@
 
 namespace WebServer.GameDataParsers
 {
-    internal class Identification
+    internal static class Identification
     {
         public static string GetJson(string id)
         {

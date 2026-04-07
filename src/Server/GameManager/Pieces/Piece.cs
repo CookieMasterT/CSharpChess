@@ -1,33 +1,36 @@
 ﻿using CSharpChess.Board;
 using CSharpChess.Game;
 using CSharpChess.Pieces.Helpers.SpecialMoves;
+using System.Collections.ObjectModel;
 
 namespace CSharpChess.Pieces
 {
     public abstract class Piece
     {
         private Piece() { }
-        public Piece(Team team)
+        protected Piece(Team team)
         {
             Team = team;
         }
 
         public virtual string Name { get => ChessNotation.PiecePlaceHolder; }
 
-        public bool hasMoved = false;
+        public bool HasMoved { get; set; }
 
-        public readonly Team Team;
+        public Team Team { get; }
 
-        public List<BoardSquare> GetLegalMoves(BoardSquare ContainingSquare, ChessBoard ContainingBoard)
+        public Collection<BoardSquare> GetLegalMoves(BoardSquare containingSquare, ChessBoard containingBoard)
         {
-            List<BoardSquare> PossibleMoves = GetAvailableTiles(ContainingSquare, ContainingBoard);
-            List<BoardSquare> LegalMoves = [];
+            ArgumentNullException.ThrowIfNull(containingSquare);
+
+            Collection<BoardSquare> PossibleMoves = GetAvailableTiles(containingSquare, containingBoard);
+            Collection<BoardSquare> LegalMoves = [];
 
             foreach (var Move in PossibleMoves)
             {
                 // if after doing the move your king will be in danger, then the move is not legal
-                ChessBoard tempBoard = FastCloner.FastCloner.DeepClone(ContainingBoard) ?? new();
-                ChessBoard.MovePiece(ContainingSquare.X, ContainingSquare.Y, Move.X, Move.Y, tempBoard, true);
+                ChessBoard tempBoard = FastCloner.FastCloner.DeepClone(containingBoard) ?? new();
+                ChessBoard.MovePiece(containingSquare.X, containingSquare.Y, Move.X, Move.Y, tempBoard, true);
                 if (ChessBoard.KingInDanger(this.Team, tempBoard))
                 {
                     continue;
@@ -38,17 +41,22 @@ namespace CSharpChess.Pieces
             return LegalMoves;
         }
 
-        abstract public List<BoardSquare> GetAvailableTiles(BoardSquare ContainingSquare, ChessBoard ContainingBoard, bool OnlyAttacks = false);
+        abstract public Collection<BoardSquare> GetAvailableTiles(BoardSquare containingSquare, ChessBoard containingBoard, bool onlyAttacks = false);
 
         public virtual SpecialMoveInfo SpecialMoveCallback(BoardSquare tile, ChessBoard board, string? promotionPiece = null) { return new NormalMove(); }
 
-        public static BoardSquare? CurrentBoardLookup(ChessBoard ContainingBoard, BoardSquare NeededSquare)
+        public static BoardSquare? CurrentBoardLookup(ChessBoard containingBoard, BoardSquare neededSquare)
         {
-            foreach (var Square in ContainingBoard.Board)
+            ArgumentNullException.ThrowIfNull(containingBoard);
+
+            foreach (var rank in containingBoard.Board)
             {
-                if (Square == NeededSquare)
+                foreach (var Square in rank)
                 {
-                    return Square;
+                    if (Square == neededSquare)
+                    {
+                        return Square;
+                    }
                 }
             }
             return null;

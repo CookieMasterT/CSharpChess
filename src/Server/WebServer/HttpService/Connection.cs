@@ -4,19 +4,19 @@ using System.Text;
 
 namespace WebServer.HttpService
 {
-    public static class Connection
+    internal static class Connection
     {
-        public static async Task StartConnection(string uri)
+        public static async Task StartConnection(Uri uri)
         {
             Console.WriteLine($"Listening on {uri}");
 
-            var listener = new HttpListener();
-            listener.Prefixes.Add(uri);
+            using var listener = new HttpListener();
+            listener.Prefixes.Add(uri.ToString());
             listener.Start();
 
             while (true)
             {
-                var context = await listener.GetContextAsync();
+                var context = await listener.GetContextAsync().ConfigureAwait(false);
 
                 if (!context.Request.IsWebSocketRequest)
                 {
@@ -31,7 +31,7 @@ namespace WebServer.HttpService
 
         private static async Task HandleWebSocketConnection(HttpListenerContext context)
         {
-            var wsContext = await context.AcceptWebSocketAsync(null);
+            var wsContext = await context.AcceptWebSocketAsync(null).ConfigureAwait(false);
             var webSocket = wsContext.WebSocket;
 
             ClientManager.buffer.Add(webSocket);
@@ -42,23 +42,23 @@ namespace WebServer.HttpService
             {
                 var result = await webSocket.ReceiveAsync(
                     new ArraySegment<byte>(buffer),
-                    CancellationToken.None);
+                    CancellationToken.None).ConfigureAwait(false);
 
                 if (result.MessageType == WebSocketMessageType.Close)
                 {
                     await webSocket.CloseAsync(
                         WebSocketCloseStatus.NormalClosure,
                         "Closing",
-                        CancellationToken.None);
+                        CancellationToken.None).ConfigureAwait(false);
                     ClientManager.UnAssignWebsocket(webSocket);
                     break;
                 }
 
                 var requestBody = Encoding.UTF8.GetString(buffer, 0, result.Count);
 
-                string Response = await Program.HandleClient(requestBody, webSocket);
+                string Response = await RequestHandler.HandleClient(requestBody, webSocket).ConfigureAwait(false);
 
-                await ClientManager.SendMessage(Response, webSocket);
+                await ClientManager.SendMessage(Response, webSocket).ConfigureAwait(false);
             }
         }
     }

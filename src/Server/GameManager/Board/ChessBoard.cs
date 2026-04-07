@@ -1,42 +1,50 @@
 ﻿using CSharpChess.Game;
 using CSharpChess.Pieces;
-using CSharpChess.Pieces.Helpers.SpecialMoves;
+using System.Collections.ObjectModel;
 
 namespace CSharpChess.Board
 {
     public class ChessBoard
     {
+        public const int BoardSize = 8;
+
         public ChessBoard()
         {
-            _board = new BoardSquare[8, 8];
-            for (int i = 0; i < 8; i++)
+            Board = new BoardSquare[BoardSize][];
+            for (int i = 0; i < BoardSize; i++)
             {
-                for (int k = 0; k < 8; k++)
+                Board[i] = new BoardSquare[BoardSize];
+                for (int k = 0; k < BoardSize; k++)
                 {
-                    _board[i, k] = new BoardSquare(i, k);
+                    Board[i][k] = new BoardSquare(i, k);
                 }
             }
         }
-        BoardSquare[,] _board;
-        public BoardSquare[,] Board { get => _board; private set => _board = value; }
-        public List<string> MoveHistory = [];
+        public BoardSquare[][] Board { get; }
+        public Collection<string> MoveHistory { get; } = [];
 
         public BoardSquare? GetSquare(int x, int y)
         {
-            if (x is >= 0 and < 8 && y is >= 0 and < 8)
-                return _board[x, y];
+            if (x is >= 0 and < BoardSize && y is >= 0 and < BoardSize)
+                return Board[x][y];
             return null;
         }
 
         public static bool IsSquareAttacked(BoardSquare square, Team byTeam, ChessBoard targetBoard)
         {
-            foreach (var tile in targetBoard.Board)
+            ArgumentNullException.ThrowIfNull(square);
+            ArgumentNullException.ThrowIfNull(targetBoard);
+
+            foreach (var rank in targetBoard.Board)
             {
-                if (tile.content is not null && tile.content.Team == byTeam)
+                foreach (var tile in rank)
                 {
-                    if (tile.content.GetAvailableTiles(tile, targetBoard, true).Contains(square))
+                    if (tile.Content is not null && tile.Content.Team == byTeam)
                     {
-                        return true;
+                        if (tile.Content.GetAvailableTiles(tile, targetBoard, true).Contains(square))
+                        {
+                            return true;
+                        }
                     }
                 }
             }
@@ -45,13 +53,18 @@ namespace CSharpChess.Board
 
         public static bool KingInDanger(Team team, ChessBoard targetBoard)
         {
-            foreach (var tile in targetBoard.Board)
+            ArgumentNullException.ThrowIfNull(targetBoard);
+
+            foreach (var rank in targetBoard.Board)
             {
-                if (tile?.content is King king && king.Team == team)
+                foreach (var tile in rank)
                 {
-                    if (IsSquareAttacked(tile, team == Team.White ? Team.Black : Team.White, targetBoard))
+                    if (tile?.Content is King king && king.Team == team)
                     {
-                        return true;
+                        if (IsSquareAttacked(tile, team == Team.White ? Team.Black : Team.White, targetBoard))
+                        {
+                            return true;
+                        }
                     }
                 }
             }
@@ -60,36 +73,47 @@ namespace CSharpChess.Board
 
         public static bool HasLegalMoves(Team team, ChessBoard targetBoard)
         {
-            foreach (var tile in targetBoard.Board)
+            ArgumentNullException.ThrowIfNull(targetBoard);
+
+            foreach (var rank in targetBoard.Board)
             {
-                if (tile.content is not null && tile.content.Team == team)
+                foreach (var tile in rank)
                 {
-                    if (tile.content.GetLegalMoves(tile, targetBoard).Count > 0)
+                    if (tile.Content is not null && tile.Content.Team == team)
                     {
-                        return true;
+                        if (tile.Content.GetLegalMoves(tile, targetBoard).Count > 0)
+                        {
+                            return true;
+                        }
                     }
                 }
             }
             return false;
         }
 
-        public static bool MovePiece(int startX, int startY, int endX, int endY, ChessBoard targetBoard, bool IgnoreLegality = false, string? promotionPiece = null)
+        public static bool MovePiece(int startX, int startY, int endX, int endY, ChessBoard targetBoard, bool ignoreLegality = false, string? promotionPiece = null)
         {
+            ArgumentNullException.ThrowIfNull(targetBoard);
+
             foreach (var coord in new int[4] { startX, startY, endX, endY })
             {
-                if (!(coord is >= 0 and < 8))
+                if (!(coord is >= 0 and < BoardSize))
                     return false;
             }
-            return MovePiece(targetBoard.Board[startX, startY], targetBoard.Board[endX, endY], targetBoard, IgnoreLegality, promotionPiece);
+            return MovePiece(targetBoard.Board[startX][startY], targetBoard.Board[endX][endY], targetBoard, ignoreLegality, promotionPiece);
         }
 
-        public static bool MovePiece(BoardSquare start, BoardSquare end, ChessBoard targetBoard, bool IgnoreLegality = false, string? promotionPiece = null)
+        public static bool MovePiece(BoardSquare start, BoardSquare end, ChessBoard targetBoard, bool ignoreLegality = false, string? promotionPiece = null)
         {
-            if (start.content is null)
+            ArgumentNullException.ThrowIfNull(start);
+            ArgumentNullException.ThrowIfNull(end);
+            ArgumentNullException.ThrowIfNull(targetBoard);
+
+            if (start.Content is null)
                 return false;
-            if ((IgnoreLegality || start.content.GetLegalMoves(start, targetBoard).Contains(end)) && start.content.Team == GameLogic.CurrentTurnTeam)
+            if ((ignoreLegality || start.Content.GetLegalMoves(start, targetBoard).Contains(end)) && start.Content.Team == GameLogic.CurrentTurnTeam)
             {
-                start.content.hasMoved = true;
+                start.Content.HasMoved = true;
 
                 Team CurrentTeam = GameLogic.CurrentTurnTeam == Team.White ? Team.Black : Team.White;
                 if (GameLogic.ChessBoard == targetBoard)
@@ -98,23 +122,26 @@ namespace CSharpChess.Board
                 }
 
                 bool wasCapturing = false;
-                if (end.content is not null)
+                if (end.Content is not null)
                     wasCapturing = true;
 
-                end.content = start.content;
-                start.content = null;
+                end.Content = start.Content;
+                start.Content = null;
 
-                var MoveType = end.content.SpecialMoveCallback(end, targetBoard, promotionPiece);
+                var MoveType = end.Content.SpecialMoveCallback(end, targetBoard, promotionPiece);
 
-                foreach (var tile in targetBoard.Board)
+                foreach (var rank in targetBoard.Board)
                 {
-                    if (tile.content is not null && tile.content.Team == CurrentTeam)
+                    foreach (var tile in rank)
                     {
-                        tile.content.TurnStartCallback();
+                        if (tile.Content is not null && tile.Content.Team == CurrentTeam)
+                        {
+                            tile.Content.TurnStartCallback();
+                        }
                     }
                 }
 
-                targetBoard.MoveHistory.Add(ChessNotation.CreateNotation(end.content, end, start, wasCapturing, HasLegalMoves(CurrentTeam, targetBoard), KingInDanger(CurrentTeam, targetBoard), MoveType));
+                targetBoard.MoveHistory.Add(ChessNotation.CreateNotation(end.Content, end, start, wasCapturing, HasLegalMoves(CurrentTeam, targetBoard), KingInDanger(CurrentTeam, targetBoard), MoveType));
 
                 return true;
             }

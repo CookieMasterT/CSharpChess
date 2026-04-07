@@ -6,13 +6,13 @@ using WebServer.RequestTypes;
 
 namespace WebServer.GameDataParsers
 {
-    internal class PieceMoves
+    internal static class PieceMoves
     {
         public static string GetJson(CoordinateInfo position)
         {
             var json = new JArray();
-            BoardSquare? tile = GameLogic.ChessBoard.Board[position.x, position.y];
-            Piece? piece = tile?.content;
+            BoardSquare? tile = GameLogic.ChessBoard.Board[position.X][position.Y];
+            Piece? piece = tile?.Content;
             if (piece is null || tile is null || piece.Team != GameLogic.CurrentTurnTeam)
                 return "{}";
             foreach (var item in piece.GetLegalMoves(tile, GameLogic.ChessBoard))

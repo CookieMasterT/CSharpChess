@@ -3,7 +3,7 @@ using WebServer.HttpService;
 
 namespace WebServer
 {
-    internal class Program : RequestHandler
+    internal static class Program
     {
         static async Task Main()
         {
@@ -11,14 +11,14 @@ namespace WebServer
             Console.WriteLine("Press Esc to exit.");
             GameLogic.SetupBoard();
 
-            _ = HttpService.Connection.StartConnection("http://localhost:54321/");
+            _ = HttpService.Connection.StartConnection(new Uri("http://localhost:54321/"));
             while (true)
             {
                 var key = Console.ReadKey();
                 if (key.Key == ConsoleKey.R)
                 {
                     GameLogic.SetupBoard();
-                    await ClientManager.SendMessageAll("refreshBoard");
+                    await ClientManager.SendMessageAll("refreshBoard").ConfigureAwait(false);
                 }
                 else if (key.Key == ConsoleKey.Escape)
                 {

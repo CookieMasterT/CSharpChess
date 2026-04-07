@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CSharpChess.Pieces.Helpers.SpecialMoves
+﻿namespace CSharpChess.Pieces.Helpers.SpecialMoves
 {
     internal class Promotion(PromotionPiece promotionPiece) : SpecialMoveInfo
     {
-        public PromotionPiece PromotionPiece { get; private set; } = promotionPiece;
+        public PromotionPiece PromotionPiece { get; } = promotionPiece;
     }
-    
+
     enum PromotionPiece
     {
         Queen,

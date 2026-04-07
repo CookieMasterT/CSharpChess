@@ -8,7 +8,7 @@ namespace CSharpChess.Board
         private int _x; // The current file indexed from 0
         private int _y; // The current rank indexed from 0
 
-        public Piece? content;
+        public Piece? Content { get; set; }
 
         private BoardSquare() { }
         public BoardSquare(int x, int y)
@@ -18,9 +18,11 @@ namespace CSharpChess.Board
         }
         public BoardSquare(BoardSquare squareToCopy)
         {
+            ArgumentNullException.ThrowIfNull(squareToCopy);
+
             _x = squareToCopy._x;
             _y = squareToCopy._y;
-            content = squareToCopy.content;
+            Content = squareToCopy.Content;
         }
 
         public int X
@@ -28,7 +30,7 @@ namespace CSharpChess.Board
             get => _x;
             set
             {
-                if (value is >= 0 and < 8)
+                if (value is >= 0 and < ChessBoard.BoardSize)
                     _x = value;
                 else
                     throw new ArgumentOutOfRangeException(nameof(value));
@@ -39,7 +41,7 @@ namespace CSharpChess.Board
             get => _y;
             set
             {
-                if (value is >= 0 and < 8)
+                if (value is >= 0 and < ChessBoard.BoardSize)
                     _y = value;
                 else
                     throw new ArgumentOutOfRangeException(nameof(value));

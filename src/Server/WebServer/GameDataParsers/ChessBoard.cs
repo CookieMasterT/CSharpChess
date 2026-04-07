@@ -9,14 +9,14 @@ namespace WebServer.GameDataParsers
         {
             var json = new JObject();
             var board = new JArray();
-            for (int x = 0; x < 8; x++)
+            for (int x = 0; x < CSharpChess.Board.ChessBoard.BoardSize; x++)
             {
                 var rank = new JArray();
-                for (int y = 0; y < 8; y++)
+                for (int y = 0; y < CSharpChess.Board.ChessBoard.BoardSize; y++)
                 {
                     var str = string.Empty;
-                    var tile = GameLogic.ChessBoard.Board[x, y];
-                    switch (tile.content?.Team)
+                    var tile = GameLogic.ChessBoard.Board[x][y];
+                    switch (tile.Content?.Team)
                     {
                         case CSharpChess.Game.Team.White:
                             str += ChessNotation.WhiteTeam;
@@ -25,7 +25,7 @@ namespace WebServer.GameDataParsers
                             str += ChessNotation.BlackTeam;
                             break;
                     }
-                    str += (tile.content?.Name ?? ChessNotation.EmptySquare);
+                    str += (tile.Content?.Name ?? ChessNotation.EmptySquare);
                     rank.Add(str);
                 }
                 board.Add(rank);

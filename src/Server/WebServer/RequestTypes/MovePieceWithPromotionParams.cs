@@ -1,11 +1,13 @@
 ﻿namespace WebServer.RequestTypes
 {
+#pragma warning disable CS8618 // Non-nullable field is uninitialized
     internal class MovePieceWithPromotionParams
     {
-        public string? startX = null!;
-        public string? startY = null!;
-        public string? endX = null!;
-        public string? endY = null!;
-        public string? promotionPiece = null!;
+        public string? startX;
+        public string? startY;
+        public string? endX;
+        public string? endY;
+        public string? promotionPiece;
     }
+#pragma warning restore CS8618
 }

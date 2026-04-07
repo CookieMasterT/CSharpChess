@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CSharpChess.Pieces.Helpers.SpecialMoves
+﻿namespace CSharpChess.Pieces.Helpers.SpecialMoves
 {
-    public class Castle(CastleSide castleSide) : SpecialMoveInfo
+    internal class Castle(CastleSide castleSide) : SpecialMoveInfo
     {
-        public CastleSide CastleSide { get; private set; } = castleSide;
+        public CastleSide CastleSide { get; } = castleSide;
     }
 
-    public enum CastleSide
+    internal enum CastleSide
     {
         KingSide,
         QueenSide

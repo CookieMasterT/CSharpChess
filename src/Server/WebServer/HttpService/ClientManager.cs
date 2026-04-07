@@ -3,7 +3,7 @@ using System.Text;
 
 namespace WebServer.HttpService
 {
-    internal class ClientManager
+    internal static class ClientManager
     {
         public static List<ClientInstance> clients = [];
         public static List<WebSocket> buffer = [];
@@ -42,20 +42,20 @@ namespace WebServer.HttpService
         {
             foreach (var client in clients)
             {
-                await SendMessage(message, client.connection!);
+                await SendMessage(message, client.connection!).ConfigureAwait(false);
             }
         }
 
         public static async Task SendMessage(string message, WebSocket webSocket)
         {
-            if (webSocket != null && webSocket.State == WebSocketState.Open && message != String.Empty)
+            if (webSocket != null && webSocket.State == WebSocketState.Open && !string.IsNullOrEmpty(message))
             {
                 var buffer = Encoding.UTF8.GetBytes(message);
                 await webSocket.SendAsync(
                     new ArraySegment<byte>(buffer),
                     WebSocketMessageType.Text,
                     true,
-                    CancellationToken.None);
+                    CancellationToken.None).ConfigureAwait(false);
             }
         }
     }

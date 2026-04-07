@@ -1,8 +1,8 @@
 ﻿namespace WebServer.RequestTypes
 {
-    public class InitialInfoRequest
+    internal class InitialInfoRequest
     {
-        public string? requestType = null!;
-        public string? extraInfo = null!;
+        public string? RequestType { get; set; }
+        public string? ExtraInfo { get; set; }
     }
 }

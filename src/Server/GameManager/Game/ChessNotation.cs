@@ -4,7 +4,7 @@ using CSharpChess.Pieces.Helpers.SpecialMoves;
 
 namespace CSharpChess.Game
 {
-    public class ChessNotation
+    public static class ChessNotation
     {
         // IMPORTANT: Some of the variables here are used to name data sent over to the client, so changing them may break client functionality if not updated on the client as well.
 
@@ -36,6 +36,9 @@ namespace CSharpChess.Game
 
         public static string CreateNotation(Piece movingPiece, BoardSquare destination, BoardSquare departure, bool capturingMove, bool opponentHasLegalMoves, bool opponentKingInDanger, SpecialMoveInfo extras)
         {
+            ArgumentNullException.ThrowIfNull(movingPiece);
+            ArgumentNullException.ThrowIfNull(departure);
+
             // If the move is a castle, return the appropriate castle notation
             if (extras is Castle)
             {

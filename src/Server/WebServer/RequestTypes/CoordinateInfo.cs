@@ -1,8 +1,8 @@
 ﻿namespace WebServer.RequestTypes
 {
-    public class CoordinateInfo
+    internal class CoordinateInfo
     {
-        public int x;
-        public int y;
+        public int X { get; set; }
+        public int Y { get; set; }
     }
 }

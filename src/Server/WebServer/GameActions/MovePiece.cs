@@ -1,5 +1,6 @@
-﻿using CSharpChess.Game;
-using CSharpChess.Board;
+﻿using CSharpChess.Board;
+using CSharpChess.Game;
+using System.Globalization;
 using WebServer.RequestTypes;
 
 namespace WebServer.GameActions
@@ -10,7 +11,12 @@ namespace WebServer.GameActions
         {
             if (info.startX == null || info.startY == null || info.endX == null || info.endY == null)
                 return;
-            ChessBoard.MovePiece(int.Parse(info.startX), int.Parse(info.startY), int.Parse(info.endX), int.Parse(info.endY), GameLogic.ChessBoard);
+            ChessBoard.MovePiece(
+                int.Parse(info.startX, CultureInfo.InvariantCulture),
+                int.Parse(info.startY, CultureInfo.InvariantCulture),
+                int.Parse(info.endX, CultureInfo.InvariantCulture),
+                int.Parse(info.endY, CultureInfo.InvariantCulture),
+                GameLogic.ChessBoard);
         }
     }
 }
