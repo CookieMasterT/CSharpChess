@@ -158,6 +158,10 @@ table * {
   font-size: 14px;
 }
 
+.chess-history-table * {
+  user-select: all;
+}
+
 .chess-history-table tr {
   border-bottom: 1px solid var(--chess-border-color);
 }
