@@ -1,6 +1,6 @@
-﻿namespace WebServer.RequestTypes
+﻿#pragma warning disable CS8618, CS0649 // Non-nullable field is uninitialized, field is never assigned to, and will always have its default value null
+namespace WebServer.RequestTypes
 {
-#pragma warning disable CS8618 // Non-nullable field is uninitialized
     internal class MovePieceParams
     {
         public string? startX;
@@ -8,5 +8,5 @@
         public string? endX;
         public string? endY;
     }
-#pragma warning restore CS8618
 }
+#pragma warning restore CS8618, CS0649
