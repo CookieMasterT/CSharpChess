@@ -10,23 +10,29 @@ namespace CSharpChess.Board
 
         public ChessBoard()
         {
-            Board = new BoardSquare[BoardSize][];
+            _board = new BoardSquare[BoardSize][];
             for (int i = 0; i < BoardSize; i++)
             {
-                Board[i] = new BoardSquare[BoardSize];
+                _board[i] = new BoardSquare[BoardSize];
                 for (int k = 0; k < BoardSize; k++)
                 {
-                    Board[i][k] = new BoardSquare(i, k);
+                    _board[i][k] = new BoardSquare(i, k);
                 }
             }
         }
-        public BoardSquare[][] Board { get; }
+        private readonly BoardSquare[][] _board;
+
+        public BoardSquare this[int x, int y]
+        {
+            get => _board[x][y];
+        }
+
         public Collection<string> MoveHistory { get; } = [];
 
         public BoardSquare? GetSquare(int x, int y)
         {
             if (x is >= 0 and < BoardSize && y is >= 0 and < BoardSize)
-                return Board[x][y];
+                return _board[x][y];
             return null;
         }
 
@@ -35,10 +41,11 @@ namespace CSharpChess.Board
             ArgumentNullException.ThrowIfNull(square);
             ArgumentNullException.ThrowIfNull(targetBoard);
 
-            foreach (var rank in targetBoard.Board)
+            for (int x = 0; x < BoardSize; x++)
             {
-                foreach (var tile in rank)
+                for (int y = 0; y < BoardSize; y++)
                 {
+                    var tile = targetBoard[x, y];
                     if (tile.Content is not null && tile.Content.Team == byTeam)
                     {
                         if (tile.Content.GetAvailableTiles(tile, targetBoard, true).Contains(square))
@@ -55,10 +62,11 @@ namespace CSharpChess.Board
         {
             ArgumentNullException.ThrowIfNull(targetBoard);
 
-            foreach (var rank in targetBoard.Board)
+            for (int x = 0; x < BoardSize; x++)
             {
-                foreach (var tile in rank)
+                for (int y = 0; y < BoardSize; y++)
                 {
+                    var tile = targetBoard[x, y];
                     if (tile?.Content is King king && king.Team == team)
                     {
                         if (IsSquareAttacked(tile, team == Team.White ? Team.Black : Team.White, targetBoard))
@@ -75,10 +83,11 @@ namespace CSharpChess.Board
         {
             ArgumentNullException.ThrowIfNull(targetBoard);
 
-            foreach (var rank in targetBoard.Board)
+            for (int x = 0; x < BoardSize; x++)
             {
-                foreach (var tile in rank)
+                for (int y = 0; y < BoardSize; y++)
                 {
+                    var tile = targetBoard[x, y];
                     if (tile.Content is not null && tile.Content.Team == team)
                     {
                         if (tile.Content.GetLegalMoves(tile, targetBoard).Count > 0)
@@ -100,7 +109,7 @@ namespace CSharpChess.Board
                 if (!(coord is >= 0 and < BoardSize))
                     return false;
             }
-            return MovePiece(targetBoard.Board[startX][startY], targetBoard.Board[endX][endY], targetBoard, ignoreLegality, promotionPiece);
+            return MovePiece(targetBoard[startX, startY], targetBoard[endX, endY], targetBoard, ignoreLegality, promotionPiece);
         }
 
         public static bool MovePiece(BoardSquare start, BoardSquare end, ChessBoard targetBoard, bool ignoreLegality = false, string? promotionPiece = null)
@@ -130,10 +139,11 @@ namespace CSharpChess.Board
 
                 var MoveType = end.Content.SpecialMoveCallback(end, targetBoard, promotionPiece);
 
-                foreach (var rank in targetBoard.Board)
+                for (int x = 0; x < BoardSize; x++)
                 {
-                    foreach (var tile in rank)
+                    for (int y = 0; y < BoardSize; y++)
                     {
+                        var tile = targetBoard[x, y];
                         if (tile.Content is not null && tile.Content.Team == CurrentTeam)
                         {
                             tile.Content.TurnStartCallback();

@@ -13,13 +13,6 @@ namespace CSharpChess.Game
 
         private static ChessBoard _chessBoard = null!;
 
-        public static void SwapSquareStruct(ref BoardSquare originalSquare, Piece? newContent)
-        {
-            if (originalSquare is null)
-                return;
-            originalSquare.Content = newContent;
-        }
-
         public static Piece GetStartRowPiece(int index, Team team)
         {
             {
@@ -36,23 +29,23 @@ namespace CSharpChess.Game
             {
                 for (int y = 0; y < ChessBoard.BoardSize; y++)
                 {
-                    SwapSquareStruct(ref ChessBoard.Board[x][y], null);
+                    _chessBoard[x, y].Content = null;
                 }
             }
 
             for (int x = 0; x < ChessBoard.BoardSize; x++)
             {
                 // white pieces
-                SwapSquareStruct(ref ChessBoard.Board[x][0], GetStartRowPiece(x, Team.White));
+                _chessBoard[x, 0].Content = GetStartRowPiece(x, Team.White);
 
                 // white pawns
-                SwapSquareStruct(ref ChessBoard.Board[x][1], new Pawn(Team.White));
+                _chessBoard[x, 1].Content = new Pawn(Team.White);
 
                 // black pawns
-                SwapSquareStruct(ref ChessBoard.Board[x][6], new Pawn(Team.Black));
+                _chessBoard[x, 6].Content = new Pawn(Team.Black);
 
                 // black pieces
-                SwapSquareStruct(ref ChessBoard.Board[x][7], GetStartRowPiece(x, Team.Black));
+                _chessBoard[x, 7].Content = GetStartRowPiece(x, Team.Black);
             }
             CurrentTurnTeam = Team.White;
         }

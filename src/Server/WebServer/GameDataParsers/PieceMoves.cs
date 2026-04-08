@@ -11,7 +11,7 @@ namespace WebServer.GameDataParsers
         public static string GetJson(CoordinateInfo position)
         {
             var json = new JArray();
-            BoardSquare? tile = GameLogic.ChessBoard.Board[position.X][position.Y];
+            BoardSquare? tile = GameLogic.ChessBoard[position.X, position.Y];
             Piece? piece = tile?.Content;
             if (piece is null || tile is null || piece.Team != GameLogic.CurrentTurnTeam)
                 return "{}";

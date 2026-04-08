@@ -49,10 +49,11 @@ namespace CSharpChess.Pieces
         {
             ArgumentNullException.ThrowIfNull(containingBoard);
 
-            foreach (var rank in containingBoard.Board)
+            for (int x = 0; x < ChessBoard.BoardSize; x++)
             {
-                foreach (var Square in rank)
+                for (int y = 0; y < ChessBoard.BoardSize; y++)
                 {
+                    var Square = containingBoard[x, y];
                     if (Square == neededSquare)
                     {
                         return Square;

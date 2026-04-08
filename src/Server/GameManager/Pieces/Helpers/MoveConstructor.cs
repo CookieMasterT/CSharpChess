@@ -44,7 +44,7 @@ namespace CSharpChess.Pieces.Helpers
             if (!(x is >= 0 and < ChessBoard.BoardSize && y is >= 0 and < ChessBoard.BoardSize))
                 return MoveCheckResult.Cant_OutOfBounds;
 
-            BoardSquare square = _targetBoard.Board[x][y];
+            BoardSquare square = _targetBoard[x, y];
 
             if (square.Content is null && !mustCapture)
             {
@@ -68,7 +68,7 @@ namespace CSharpChess.Pieces.Helpers
 
         private void Add(int x, int y)
         {
-            _moves.Add(_targetBoard.Board[x][y]);
+            _moves.Add(_targetBoard[x, y]);
         }
 
         public Collection<BoardSquare> GetMoves()
