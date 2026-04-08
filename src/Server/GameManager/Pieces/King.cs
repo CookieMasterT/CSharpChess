@@ -42,7 +42,7 @@ namespace CSharpChess.Pieces
                     {
                         int X = containingSquare.X;
                         int Y = containingSquare.Y;
-                        List<BoardSquare> tilesToCheck = [];
+                        Collection<BoardSquare> tilesToCheck = [];
                         while (true)
                         {
                             X += dir;
@@ -51,7 +51,7 @@ namespace CSharpChess.Pieces
                             {
                                 if (currentSquare.Content is Rook rook && !rook.HasMoved)
                                 {
-                                    if (CheckTilesForCastle(tilesToCheck[..1], this.Team, containingBoard))
+                                    if (CheckTilesForCastle([tilesToCheck[0], tilesToCheck[1]], this.Team, containingBoard))
                                     {
                                         var castleMoveSquare = tilesToCheck[1];
                                         MV.TryAdd(dir * 2, 0);
@@ -84,7 +84,7 @@ namespace CSharpChess.Pieces
             return MV.GetMoves();
         }
 
-        private static bool CheckTilesForCastle(List<BoardSquare> tiles, Team team, ChessBoard containingBoard)
+        private static bool CheckTilesForCastle(Collection<BoardSquare> tiles, Team team, ChessBoard containingBoard)
         {
             foreach (var tile in tiles)
             {
@@ -96,7 +96,7 @@ namespace CSharpChess.Pieces
             return true;
         }
 
-        private readonly List<(BoardSquare, Func<ChessBoard, SpecialMoveInfo>)> _specialMoveActions = [];
+        private readonly Collection<(BoardSquare, Func<ChessBoard, SpecialMoveInfo>)> _specialMoveActions = [];
         public override SpecialMoveInfo SpecialMoveCallback(BoardSquare tile, ChessBoard board, string? promotionPiece = null)
         {
             var specialMove = _specialMoveActions.FirstOrDefault(move => move.Item1 == tile);
