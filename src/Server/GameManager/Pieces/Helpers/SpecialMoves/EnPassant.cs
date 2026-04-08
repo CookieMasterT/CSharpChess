@@ -1,4 +1,4 @@
 ﻿namespace CSharpChess.Pieces.Helpers.SpecialMoves
 {
-    internal class EnPassant : SpecialMoveInfo;
+    internal sealed class EnPassant : SpecialMoveInfo;
 }

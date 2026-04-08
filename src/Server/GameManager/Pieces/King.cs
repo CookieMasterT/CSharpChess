@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace CSharpChess.Pieces
 {
-    internal class King : Piece
+    internal sealed class King : Piece
     {
         private King() : base(Team.White) { }
         public King(Team team) : base(team)

@@ -2,7 +2,7 @@
 
 namespace WebServer.HttpService
 {
-    internal class ClientInstance
+    internal sealed class ClientInstance
     {
         public ClientInstance()
         {

@@ -1,6 +1,6 @@
 ﻿namespace CSharpChess.Pieces.Helpers.SpecialMoves
 {
-    internal class Castle(CastleSide castleSide) : SpecialMoveInfo
+    internal sealed class Castle(CastleSide castleSide) : SpecialMoveInfo
     {
         public CastleSide CastleSide { get; } = castleSide;
     }

@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace CSharpChess.Pieces
 {
-    internal class Bishop : Piece
+    internal sealed class Bishop : Piece
     {
         private Bishop() : base(Team.White) { }
         public Bishop(Team team) : base(team)

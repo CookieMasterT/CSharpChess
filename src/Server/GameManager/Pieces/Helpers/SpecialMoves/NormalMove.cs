@@ -4,7 +4,7 @@
     /// This class is used to signify that a move is a normal move with no special properties.
     /// It is used as the default return value for the SpecialMoveCallback method.
     /// </summary>
-    internal class NormalMove() : SpecialMoveInfo
+    internal sealed class NormalMove() : SpecialMoveInfo
     {
     }
 }
