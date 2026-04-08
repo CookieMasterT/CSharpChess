@@ -1,12 +1,13 @@
-﻿using System.Net.WebSockets;
+﻿using System.Collections.ObjectModel;
+using System.Net.WebSockets;
 using System.Text;
 
 namespace WebServer.HttpService
 {
     internal static class ClientManager
     {
-        public static List<ClientInstance> clients = [];
-        public static List<WebSocket> buffer = [];
+        public static Collection<ClientInstance> clients = [];
+        public static Collection<WebSocket> buffer = [];
 
         public static string IdentifyWebsocket(WebSocket ws, string id = "NoID")
         {
