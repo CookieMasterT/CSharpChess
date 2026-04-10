@@ -63,6 +63,12 @@ namespace CSharpChess.Game
             // The piece name via single letter or empty string for pawn
             notation += movingPiece.Name;
 
+            // If the move is an en passant capture, it should be notated as a capture.
+            if (extras is EnPassant)
+            {
+                capturingMove = true;
+            }
+
             // If the move is a pawn move and it's a capture, identify the pawn by its departure file
             if (movingPiece is Pawn && capturingMove)
             {
@@ -70,7 +76,7 @@ namespace CSharpChess.Game
             }
 
             // Add capture symbol if it's a capturing move
-            notation += capturingMove || extras is EnPassant ? Capture : "";
+            notation += capturingMove ? Capture : "";
 
             // Add destination square in algebraic notation (e.g., e4)
             notation += destination;
