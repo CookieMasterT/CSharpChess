@@ -16,7 +16,7 @@ namespace WebServer.GameActions
                 int.Parse(info.startY, CultureInfo.InvariantCulture),
                 int.Parse(info.endX, CultureInfo.InvariantCulture),
                 int.Parse(info.endY, CultureInfo.InvariantCulture),
-                GameLogic.ChessBoard);
+                Program.GameLogicMain.ChessBoard);
         }
     }
 }

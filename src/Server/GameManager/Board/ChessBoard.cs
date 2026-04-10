@@ -8,7 +8,7 @@ namespace CSharpChess.Board
     {
         public const int BoardSize = 8;
 
-        public ChessBoard()
+        public ChessBoard(ITeamTurnProvider turnProvider)
         {
             _board = new BoardSquare[BoardSize][];
             for (int i = 0; i < BoardSize; i++)
@@ -19,8 +19,12 @@ namespace CSharpChess.Board
                     _board[i][k] = new BoardSquare(i, k);
                 }
             }
+
+            _turnProvider = turnProvider;
         }
         private readonly BoardSquare[][] _board;
+
+        private readonly ITeamTurnProvider _turnProvider;
 
         public BoardSquare this[int x, int y]
         {
@@ -120,15 +124,12 @@ namespace CSharpChess.Board
 
             if (start.Content is null)
                 return false;
-            if ((ignoreLegality || start.Content.GetLegalMoves(start, targetBoard).Contains(end)) && start.Content.Team == GameLogic.CurrentTurnTeam)
+            if ((ignoreLegality || start.Content.GetLegalMoves(start, targetBoard).Contains(end)) && start.Content.Team == targetBoard._turnProvider.Team)
             {
                 start.Content.HasMoved = true;
 
-                Team CurrentTeam = GameLogic.CurrentTurnTeam == Team.White ? Team.Black : Team.White;
-                if (GameLogic.ChessBoard == targetBoard)
-                {
-                    GameLogic.CurrentTurnTeam = CurrentTeam;
-                }
+                Team CurrentTeam = targetBoard._turnProvider.Team == Team.White ? Team.Black : Team.White;
+                targetBoard._turnProvider.TrySwitchTurnTeam(targetBoard);
 
                 bool wasCapturing = false;
                 if (end.Content is not null)
@@ -151,11 +152,33 @@ namespace CSharpChess.Board
                     }
                 }
 
-                targetBoard.MoveHistory.Add(ChessNotation.CreateNotation(end.Content, end, start, wasCapturing, HasLegalMoves(CurrentTeam, targetBoard), KingInDanger(CurrentTeam, targetBoard), MoveType));
+                if (!ignoreLegality)
+                    targetBoard.MoveHistory.Add(ChessNotation.CreateNotation(end.Content, end, start, wasCapturing, HasLegalMoves(CurrentTeam, targetBoard), KingInDanger(CurrentTeam, targetBoard), MoveType));
 
                 return true;
             }
             return false;
+        }
+
+        public static void PassTurn(ChessBoard targetBoard)
+        {
+            ArgumentNullException.ThrowIfNull(targetBoard);
+
+            Team CurrentTeam = targetBoard._turnProvider.Team == Team.White ? Team.Black : Team.White;
+            targetBoard._turnProvider.TrySwitchTurnTeam(targetBoard);
+
+            for (int x = 0; x < BoardSize; x++)
+            {
+                for (int y = 0; y < BoardSize; y++)
+                {
+                    var tile = targetBoard[x, y];
+                    if (tile.Content is not null && tile.Content.Team == CurrentTeam)
+                    {
+                        tile.Content.TurnStartCallback();
+                    }
+                }
+            }
+            targetBoard.MoveHistory.Add("-||-");
         }
     }
 }

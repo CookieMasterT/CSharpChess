@@ -3,15 +3,15 @@ using CSharpChess.Pieces;
 
 namespace CSharpChess.Game
 {
-    public enum Team { White, Black }
-
-    public static class GameLogic
+    public class GameLogic : ITeamTurnProvider
     {
-        public static Team CurrentTurnTeam { get; set; }
+        public Team Team => CurrentTurnTeam;
 
-        public static ChessBoard ChessBoard => _chessBoard;
+        private Team CurrentTurnTeam { get; set; }
 
-        private static ChessBoard _chessBoard = null!;
+        public ChessBoard ChessBoard => _chessBoard;
+
+        private ChessBoard _chessBoard = null!;
 
         public static Piece GetStartRowPiece(int index, Team team)
         {
@@ -22,9 +22,9 @@ namespace CSharpChess.Game
             }
         }
 
-        public static void SetupBoard()
+        public void SetupBoard()
         {
-            _chessBoard = new ChessBoard();
+            _chessBoard = new ChessBoard(this);
             for (int x = 0; x < ChessBoard.BoardSize; x++)
             {
                 for (int y = 0; y < ChessBoard.BoardSize; y++)
@@ -48,6 +48,16 @@ namespace CSharpChess.Game
                 _chessBoard[x, 7].Content = GetStartRowPiece(x, Team.Black);
             }
             CurrentTurnTeam = Team.White;
+        }
+
+        public bool TrySwitchTurnTeam(ChessBoard chessBoard)
+        {
+            if (chessBoard == _chessBoard)
+            {
+                this.CurrentTurnTeam = this.CurrentTurnTeam == Team.White ? Team.Black : Team.White;
+                return true;
+            }
+            return false;
         }
     }
 }

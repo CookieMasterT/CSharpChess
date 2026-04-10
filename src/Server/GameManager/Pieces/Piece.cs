@@ -29,7 +29,7 @@ namespace CSharpChess.Pieces
             foreach (var Move in PossibleMoves)
             {
                 // if after doing the move your king will be in danger, then the move is not legal
-                ChessBoard tempBoard = FastCloner.FastCloner.DeepClone(containingBoard) ?? new();
+                ChessBoard tempBoard = FastCloner.FastCloner.DeepClone(containingBoard) ?? throw new InvalidOperationException("Failed to clone the board. (Is FastCloner NuGet package installed?)");
                 ChessBoard.MovePiece(containingSquare.X, containingSquare.Y, Move.X, Move.Y, tempBoard, true);
                 if (ChessBoard.KingInDanger(this.Team, tempBoard))
                 {

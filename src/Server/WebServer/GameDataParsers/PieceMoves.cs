@@ -11,11 +11,11 @@ namespace WebServer.GameDataParsers
         public static string GetJson(CoordinateInfo position)
         {
             var json = new JArray();
-            BoardSquare? tile = GameLogic.ChessBoard[position.X, position.Y];
+            BoardSquare? tile = Program.GameLogicMain.ChessBoard[position.X, position.Y];
             Piece? piece = tile?.Content;
-            if (piece is null || tile is null || piece.Team != GameLogic.CurrentTurnTeam)
+            if (piece is null || tile is null || piece.Team != Program.GameLogicMain.Team)
                 return "{}";
-            foreach (var item in piece.GetLegalMoves(tile, GameLogic.ChessBoard))
+            foreach (var item in piece.GetLegalMoves(tile, Program.GameLogicMain.ChessBoard))
             {
                 json.Add(new JArray(new int[] { item.X, item.Y }));
             }

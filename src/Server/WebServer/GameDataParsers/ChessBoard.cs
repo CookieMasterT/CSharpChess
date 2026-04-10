@@ -15,7 +15,7 @@ namespace WebServer.GameDataParsers
                 for (int y = 0; y < CSharpChess.Board.ChessBoard.BoardSize; y++)
                 {
                     var str = string.Empty;
-                    var tile = GameLogic.ChessBoard[x, y];
+                    var tile = Program.GameLogicMain.ChessBoard[x, y];
                     switch (tile.Content?.Team)
                     {
                         case CSharpChess.Game.Team.White:
@@ -31,8 +31,8 @@ namespace WebServer.GameDataParsers
                 board.Add(rank);
             }
             json.Add("board", board);
-            json.Add("currentTeam", GameLogic.CurrentTurnTeam == Team.White ? "White" : "Black");
-            json.Add("moveHistory", new JArray(GameLogic.ChessBoard.MoveHistory));
+            json.Add("currentTeam", Program.GameLogicMain.Team == Team.White ? "White" : "Black");
+            json.Add("moveHistory", new JArray(Program.GameLogicMain.ChessBoard.MoveHistory));
             return json.ToString();
         }
     }
