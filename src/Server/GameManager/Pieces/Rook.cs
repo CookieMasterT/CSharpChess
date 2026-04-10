@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace CSharpChess.Pieces
 {
-    internal sealed class Rook : Piece
+    public class Rook : Piece
     {
         private Rook() : base(Team.White) { }
         public Rook(Team team) : base(team)

@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace CSharpChess.Pieces
 {
-    internal sealed class Pawn : Piece
+    public class Pawn : Piece
     {
         private Pawn() : base(Team.White) { }
         public Pawn(Team team) : base(team)

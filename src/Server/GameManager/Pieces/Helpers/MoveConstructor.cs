@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace CSharpChess.Pieces.Helpers
 {
-    internal class MoveConstructor(Piece moveInitiator, BoardSquare sourceTile, ChessBoard targetBoard)
+    internal sealed class MoveConstructor(Piece moveInitiator, BoardSquare sourceTile, ChessBoard targetBoard)
     {
         private readonly Piece _moveInitiator = moveInitiator;
         private readonly BoardSquare _sourceTile = sourceTile;

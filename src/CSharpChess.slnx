@@ -2,6 +2,7 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
+  <Project Path="Server/GameManager.Tests/GameManager.Tests/GameManager.Tests.csproj" Id="cf35b30c-fb83-4c7a-bac0-38f44beeffab" />
   <Project Path="Server/GameManager/GameManager.csproj" />
   <Project Path="Server/WebServer/WebServer.csproj" />
 </Solution>
