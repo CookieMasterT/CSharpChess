@@ -71,6 +71,12 @@ table * {
   user-select: none;
 }
 
+table tbody {
+  display: block;
+  width: 472px;
+  height: 472px;
+}
+
 .tile-w, .tile-b {
   width: var(--TileSize);
   height: var(--TileSize);
