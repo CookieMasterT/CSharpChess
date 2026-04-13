@@ -71,7 +71,7 @@ table * {
   user-select: none;
 }
 
-table tbody {
+#ChessBoard table tbody {
   display: block;
   width: 472px;
   height: 472px;
