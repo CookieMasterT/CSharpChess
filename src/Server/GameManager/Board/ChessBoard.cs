@@ -126,7 +126,7 @@ namespace CSharpChess.Board
             if (start.Content is null)
                 return false;
             Collection<string> legalPromotions = [ChessNotation.Queen, ChessNotation.Rook, ChessNotation.Bishop, ChessNotation.Knight];
-            if (((end.Y == 0 && start.Content.Team == Team.Black) || (end.Y == 7 && start.Content.Team == Team.White)) && (promotionPiece is null || !legalPromotions.Contains(promotionPiece)))
+            if ((start.Content is Pawn) && (((end.Y == 0 && start.Content.Team == Team.Black) || (end.Y == 7 && start.Content.Team == Team.White)) && (promotionPiece is null || !legalPromotions.Contains(promotionPiece))))
                 return false;
             if ((ignoreLegality || start.Content.GetLegalMoves(start, targetBoard).Contains(end)) && start.Content.Team == targetBoard._turnProvider.Team)
             {
