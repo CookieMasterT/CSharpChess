@@ -19,6 +19,7 @@ namespace GameManager.Tests.Pieces
 
             // Act
             ChessBoard.MovePiece(0, 0, 0, 2, cb); // move from start to 2 squares up the y axis
+
             // Assert
             Assert.AreEqual(pawn, cb[0, 2].Content); // the pawn should be at the new location
         }
@@ -100,6 +101,7 @@ namespace GameManager.Tests.Pieces
             var pawn = new Pawn(Team.Black);
 
             cb[0, 6].Content = pawn;
+
             // Act
             var result = ChessBoard.MovePiece(0, 6, 0, 7, cb); // attempt to move upward
 
@@ -226,8 +228,10 @@ namespace GameManager.Tests.Pieces
             var cb = new ChessBoard(new TurnTeamStub(Team.White));
             var pawn = new Pawn(Team.White);
             cb[0, 6].Content = pawn;
+
             // Act
             var result = ChessBoard.MovePiece(0, 6, 0, 7, cb); // attempt to move to the promotion rank without specifying a promotion piece
+
             // Assert
             Assert.IsFalse(result); // the move should fail because a promotion piece must be specified when a pawn reaches the promotion rank
         }
