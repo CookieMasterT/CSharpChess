@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 
 namespace CSharpChess.Board
 {
+    public enum GameState { Ongoing, WhiteWins, BlackWins, Tie }
+
     public class ChessBoard
     {
         public const int BoardSize = 8;
@@ -25,6 +27,10 @@ namespace CSharpChess.Board
         private readonly BoardSquare[][] _board;
 
         private readonly ITeamTurnProvider _turnProvider;
+
+        public GameState CurrentGameState => _currentGameState;
+
+        private GameState _currentGameState = GameState.Ongoing;
 
         public BoardSquare? this[int x, int y]
         {
@@ -135,6 +141,8 @@ namespace CSharpChess.Board
             ArgumentNullException.ThrowIfNull(end);
             ArgumentNullException.ThrowIfNull(targetBoard);
 
+            if (targetBoard._currentGameState != GameState.Ongoing)
+                return false;
             if (start.Content is null)
                 return false;
             Collection<string> legalPromotions = [ChessNotation.Queen, ChessNotation.Rook, ChessNotation.Bishop, ChessNotation.Knight];
@@ -171,6 +179,7 @@ namespace CSharpChess.Board
                 if (!ignoreLegality)
                     targetBoard.MoveHistory.Add(ChessNotation.CreateNotation(end.Content, end, start, wasCapturing, HasLegalMoves(CurrentTeam, targetBoard), KingInDanger(CurrentTeam, targetBoard), MoveType));
 
+                UpdateGameState(targetBoard, wasCapturing, end.Content is Pawn);
                 return true;
             }
             return false;
@@ -195,6 +204,38 @@ namespace CSharpChess.Board
                 }
             }
             targetBoard.MoveHistory.Add("-||-");
+        }
+
+        private int _fiftyMoveCounter; // if this is -1, it means that the current turn did have a capture or a pawn move.
+
+        private static void UpdateGameState(ChessBoard targetBoard, bool wasCapturing, bool isPawnMove)
+        {
+            ArgumentNullException.ThrowIfNull(targetBoard);
+
+            var currentTeam = targetBoard._turnProvider.Team == Team.White ? Team.Black : Team.White;
+
+            if (KingInDanger(currentTeam, targetBoard) && !HasLegalMoves(currentTeam, targetBoard))
+            {
+                targetBoard._currentGameState = currentTeam == Team.White ? GameState.BlackWins : GameState.WhiteWins;
+            }
+            else if (!KingInDanger(currentTeam, targetBoard) && !HasLegalMoves(currentTeam, targetBoard))
+            {
+                targetBoard._currentGameState = GameState.Tie;
+            }
+
+            if (wasCapturing || isPawnMove)
+            {
+                targetBoard._fiftyMoveCounter = -1;
+            }
+
+            if (currentTeam == Team.Black)
+            {
+                targetBoard._fiftyMoveCounter++;
+                if (targetBoard._fiftyMoveCounter >= 50)
+                {
+                    targetBoard._currentGameState = GameState.Tie;
+                }
+            }
         }
     }
 }

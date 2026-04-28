@@ -22,9 +22,13 @@ namespace CSharpChess.Pieces
         public Collection<BoardSquare> GetLegalMoves(BoardSquare containingSquare, ChessBoard containingBoard)
         {
             ArgumentNullException.ThrowIfNull(containingSquare);
+            ArgumentNullException.ThrowIfNull(containingBoard);
 
             Collection<BoardSquare> PossibleMoves = GetAvailableTiles(containingSquare, containingBoard);
             Collection<BoardSquare> LegalMoves = [];
+
+            if (containingBoard.CurrentGameState != GameState.Ongoing)
+                return LegalMoves;
 
             foreach (var Move in PossibleMoves)
             {
