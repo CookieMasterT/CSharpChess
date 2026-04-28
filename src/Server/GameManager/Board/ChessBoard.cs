@@ -1,7 +1,6 @@
 ﻿using CSharpChess.Game;
 using CSharpChess.Pieces;
 using System.Collections.ObjectModel;
-using static System.Net.WebRequestMethods;
 
 namespace CSharpChess.Board
 {
@@ -27,9 +26,14 @@ namespace CSharpChess.Board
 
         private readonly ITeamTurnProvider _turnProvider;
 
-        public BoardSquare this[int x, int y]
+        public BoardSquare? this[int x, int y]
         {
-            get => _board[x][y];
+            get
+            {
+                if (x is >= 0 and < BoardSize && y is >= 0 and < BoardSize)
+                    return _board[x][y];
+                return null;
+            }
         }
 
         public Collection<string> MoveHistory { get; } = [];
@@ -51,7 +55,7 @@ namespace CSharpChess.Board
                 for (int y = 0; y < BoardSize; y++)
                 {
                     var tile = targetBoard[x, y];
-                    if (tile.Content is not null && tile.Content.Team == byTeam)
+                    if (tile?.Content is not null && tile.Content.Team == byTeam)
                     {
                         if (tile.Content.GetAvailableTiles(tile, targetBoard, true).Contains(square))
                         {
@@ -93,7 +97,7 @@ namespace CSharpChess.Board
                 for (int y = 0; y < BoardSize; y++)
                 {
                     var tile = targetBoard[x, y];
-                    if (tile.Content is not null && tile.Content.Team == team)
+                    if (tile?.Content is not null && tile.Content.Team == team)
                     {
                         if (tile.Content.GetLegalMoves(tile, targetBoard).Count > 0)
                         {
@@ -114,7 +118,15 @@ namespace CSharpChess.Board
                 if (!(coord is >= 0 and < BoardSize))
                     return false;
             }
-            return MovePiece(targetBoard[startX, startY], targetBoard[endX, endY], targetBoard, ignoreLegality, promotionPiece);
+            var start = targetBoard[startX, startY];
+            var end = targetBoard[endX, endY];
+
+            if (start is null || end is null)
+            {
+                throw new InvalidOperationException("The provided coordinates are out of bounds, you cannot move a piece from / to outside the board.");
+            }
+
+            return MovePiece(start, end, targetBoard, ignoreLegality, promotionPiece);
         }
 
         public static bool MovePiece(BoardSquare start, BoardSquare end, ChessBoard targetBoard, bool ignoreLegality = false, string? promotionPiece = null)
@@ -149,7 +161,7 @@ namespace CSharpChess.Board
                     for (int y = 0; y < BoardSize; y++)
                     {
                         var tile = targetBoard[x, y];
-                        if (tile.Content is not null && tile.Content.Team == CurrentTeam)
+                        if (tile?.Content is not null && tile.Content.Team == CurrentTeam)
                         {
                             tile.Content.TurnStartCallback();
                         }
@@ -176,7 +188,7 @@ namespace CSharpChess.Board
                 for (int y = 0; y < BoardSize; y++)
                 {
                     var tile = targetBoard[x, y];
-                    if (tile.Content is not null && tile.Content.Team == CurrentTeam)
+                    if (tile?.Content is not null && tile.Content.Team == CurrentTeam)
                     {
                         tile.Content.TurnStartCallback();
                     }

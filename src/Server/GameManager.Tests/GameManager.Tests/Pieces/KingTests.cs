@@ -2,9 +2,6 @@
 using CSharpChess.Game;
 using CSharpChess.Pieces;
 using GameManager.Tests.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace GameManager.Tests.Pieces
 {

@@ -46,7 +46,7 @@ namespace CSharpChess.Pieces
                         while (true)
                         {
                             X += dir;
-                            var currentSquare = containingBoard.GetSquare(X, Y);
+                            var currentSquare = containingBoard[X, Y];
                             if (currentSquare != null)
                             {
                                 if (currentSquare.Content is Rook rook && !rook.HasMoved)
@@ -58,7 +58,7 @@ namespace CSharpChess.Pieces
                                         _specialMoveActions.Add((castleMoveSquare, (containingBoard) =>
                                         {
                                             currentSquare = Piece.CurrentBoardLookup(containingBoard, currentSquare);
-                                            containingBoard.GetSquare(castleMoveSquare.X - dir, castleMoveSquare.Y)?.Content = currentSquare?.Content;
+                                            containingBoard[castleMoveSquare.X - dir, castleMoveSquare.Y]?.Content = currentSquare?.Content;
                                             currentSquare?.Content = null;
 
                                             if (dir == -1)

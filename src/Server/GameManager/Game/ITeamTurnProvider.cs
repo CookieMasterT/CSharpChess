@@ -1,7 +1,4 @@
 ﻿using CSharpChess.Board;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CSharpChess.Game
 {

@@ -1,5 +1,4 @@
 ﻿using CSharpChess.Board;
-using CSharpChess.Game;
 using System.Globalization;
 using WebServer.RequestTypes;
 

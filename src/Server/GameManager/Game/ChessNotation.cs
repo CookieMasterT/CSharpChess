@@ -78,7 +78,7 @@ namespace CSharpChess.Game
             // Add capture symbol if it's a capturing move
             notation += capturingMove ? Capture : "";
 
-            // Add destination square in algebraic notation (e.g., e4)
+            // Add destination square in algebraic notation (e.g. e4)
             notation += destination;
 
             // If the move includes a promotion, add the promoted piece type

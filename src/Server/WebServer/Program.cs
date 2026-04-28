@@ -5,7 +5,8 @@ namespace WebServer
 {
     internal static class Program
     {
-        static Program() {
+        static Program()
+        {
             GameLogicMain = new GameLogic();
         }
 

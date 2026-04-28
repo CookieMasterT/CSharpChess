@@ -223,7 +223,8 @@ namespace GameManager.Tests.Pieces
         }
 
         [TestMethod]
-        public void PawnPromotionWithoutChoiceShouldFail() {
+        public void PawnPromotionWithoutChoiceShouldFail()
+        {
             // Arrange
             var cb = new ChessBoard(new TurnTeamStub(Team.White));
             var pawn = new Pawn(Team.White);

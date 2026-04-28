@@ -1,5 +1,4 @@
 ﻿using CSharpChess.Board;
-using CSharpChess.Game;
 using CSharpChess.Pieces;
 using Newtonsoft.Json.Linq;
 using WebServer.RequestTypes;

@@ -49,7 +49,7 @@ namespace CSharpChess.Pieces
             MV.TryAdd(-1, direction, mustCapture: true);
 
             // if there is an adjacent enemy pawn that just did a double move, we can capture it en passant
-            BoardSquare? leftSquare = containingBoard.GetSquare(containingSquare.X - 1, containingSquare.Y);
+            BoardSquare? leftSquare = containingBoard[containingSquare.X - 1, containingSquare.Y];
             if (leftSquare?.Content is Pawn pawnL && pawnL._doubleMove && pawnL.Team != this.Team)
             {
                 MV.TryAdd(-1, direction);
@@ -60,7 +60,7 @@ namespace CSharpChess.Pieces
                 }
                 ));
             }
-            BoardSquare? rightSquare = containingBoard.GetSquare(containingSquare.X + 1, containingSquare.Y);
+            BoardSquare? rightSquare = containingBoard[containingSquare.X + 1, containingSquare.Y];
             if (rightSquare?.Content is Pawn pawnR && pawnR._doubleMove && pawnR.Team != this.Team)
             {
                 MV.TryAdd(1, direction);

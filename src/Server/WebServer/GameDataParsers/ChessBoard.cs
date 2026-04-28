@@ -16,7 +16,7 @@ namespace WebServer.GameDataParsers
                 {
                     var str = string.Empty;
                     var tile = Program.GameLogicMain.ChessBoard[x, y];
-                    switch (tile.Content?.Team)
+                    switch (tile?.Content?.Team)
                     {
                         case CSharpChess.Game.Team.White:
                             str += ChessNotation.WhiteTeam;
@@ -25,7 +25,7 @@ namespace WebServer.GameDataParsers
                             str += ChessNotation.BlackTeam;
                             break;
                     }
-                    str += (tile.Content?.Name ?? ChessNotation.EmptySquare);
+                    str += (tile?.Content?.Name ?? ChessNotation.EmptySquare);
                     rank.Add(str);
                 }
                 board.Add(rank);
