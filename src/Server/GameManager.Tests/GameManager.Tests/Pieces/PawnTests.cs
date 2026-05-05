@@ -15,13 +15,13 @@ namespace GameManager.Tests.Pieces
             var cb = new ChessBoard(new TurnTeamStub(Team.White));
             var pawn = new Pawn(Team.White);
 
-            cb[0, 0].Content = pawn;
+            cb[0, 0]?.Content = pawn;
 
             // Act
             ChessBoard.MovePiece(0, 0, 0, 2, cb); // move from start to 2 squares up the y axis
 
             // Assert
-            Assert.AreEqual(pawn, cb[0, 2].Content); // the pawn should be at the new location
+            Assert.AreEqual(pawn, cb[0, 2]?.Content); // the pawn should be at the new location
         }
 
         [TestMethod]
@@ -32,8 +32,8 @@ namespace GameManager.Tests.Pieces
             var pawn = new Pawn(Team.White);
             var blockingPiece = new Pawn(Team.White);
 
-            cb[0, 0].Content = pawn;
-            cb[0, 1].Content = blockingPiece; // place a piece directly in front of the pawn
+            cb[0, 0]?.Content = pawn;
+            cb[0, 1]?.Content = blockingPiece; // place a piece directly in front of the pawn
 
             // Act
             var result = ChessBoard.MovePiece(0, 0, 0, 2, cb); // attempt to move from start to 2 squares up the y axis
@@ -50,7 +50,7 @@ namespace GameManager.Tests.Pieces
             var cb = new ChessBoard(new TurnTeamStub(Team.White));
             var pawn = new Pawn(Team.White);
 
-            cb[0, 1].Content = pawn;
+            cb[0, 1]?.Content = pawn;
 
             // Act
             ChessBoard.MovePiece(0, 1, 0, 2, cb); // move from start to 1 square up the y axis
@@ -67,7 +67,7 @@ namespace GameManager.Tests.Pieces
             var cb = new ChessBoard(new TurnTeamStub(Team.White));
             var pawn = new Pawn(Team.White);
 
-            cb[0, 1].Content = pawn;
+            cb[0, 1]?.Content = pawn;
 
             // Act
             var result = ChessBoard.MovePiece(0, 1, 0, 0, cb); // attempt to move downward
@@ -83,14 +83,14 @@ namespace GameManager.Tests.Pieces
             var cb = new ChessBoard(new TurnTeamStub(Team.White));
             var pawn = new Pawn(Team.White);
 
-            cb[0, 1].Content = pawn;
+            cb[0, 1]?.Content = pawn;
 
             // Act
             var result = ChessBoard.MovePiece(0, 1, 0, 2, cb); // move upward
 
             // Assert
             Assert.IsTrue(result); // the move should succeed because white pawns move upward
-            Assert.AreEqual(pawn, cb[0, 2].Content);
+            Assert.AreEqual(pawn, cb[0, 2]?.Content);
         }
 
         [TestMethod]
@@ -100,7 +100,7 @@ namespace GameManager.Tests.Pieces
             var cb = new ChessBoard(new TurnTeamStub(Team.Black));
             var pawn = new Pawn(Team.Black);
 
-            cb[0, 6].Content = pawn;
+            cb[0, 6]?.Content = pawn;
 
             // Act
             var result = ChessBoard.MovePiece(0, 6, 0, 7, cb); // attempt to move upward
@@ -116,14 +116,14 @@ namespace GameManager.Tests.Pieces
             var cb = new ChessBoard(new TurnTeamStub(Team.Black));
             var pawn = new Pawn(Team.Black);
 
-            cb[0, 6].Content = pawn;
+            cb[0, 6]?.Content = pawn;
 
             // Act
             var result = ChessBoard.MovePiece(0, 6, 0, 5, cb); // attempt to move downward
 
             // Assert
             Assert.IsTrue(result); // the move should succeed because black pawns move downward
-            Assert.AreEqual(pawn, cb[0, 5].Content);
+            Assert.AreEqual(pawn, cb[0, 5]?.Content);
         }
 
         [TestMethod]
@@ -134,8 +134,8 @@ namespace GameManager.Tests.Pieces
             var pawn = new Pawn(Team.White);
             var EnemyPiece = new Pawn(Team.Black);
 
-            cb[0, 1].Content = pawn;
-            cb[0, 2].Content = EnemyPiece;
+            cb[0, 1]?.Content = pawn;
+            cb[0, 2]?.Content = EnemyPiece;
 
             // Act
             var result = ChessBoard.MovePiece(0, 1, 0, 2, cb); // attempt to capture upward
@@ -151,7 +151,7 @@ namespace GameManager.Tests.Pieces
             var cb = new ChessBoard(new TurnTeamStub(Team.White));
             var pawn = new Pawn(Team.White);
 
-            cb[0, 1].Content = pawn;
+            cb[0, 1]?.Content = pawn;
 
             // Act
             var result = ChessBoard.MovePiece(0, 1, 1, 2, cb); // attempt to move diagonally
@@ -168,15 +168,15 @@ namespace GameManager.Tests.Pieces
             var pawn = new Pawn(Team.White);
             var EnemyPiece = new Pawn(Team.Black);
 
-            cb[0, 1].Content = pawn;
-            cb[1, 2].Content = EnemyPiece;
+            cb[0, 1]?.Content = pawn;
+            cb[1, 2]?.Content = EnemyPiece;
 
             // Act
             var result = ChessBoard.MovePiece(0, 1, 1, 2, cb); // attempt to capture diagonally
 
             // Assert
             Assert.IsTrue(result); // the move should succeed because pawns can capture pieces diagonally
-            Assert.AreEqual(pawn, cb[1, 2].Content);
+            Assert.AreEqual(pawn, cb[1, 2]?.Content);
         }
 
         [TestMethod]
@@ -187,8 +187,8 @@ namespace GameManager.Tests.Pieces
             var attackingPawn = new Pawn(Team.White);
             var enemyPawn = new Pawn(Team.Black);
 
-            cb[0, 4].Content = attackingPawn;
-            cb[1, 6].Content = enemyPawn;
+            cb[0, 4]?.Content = attackingPawn;
+            cb[1, 6]?.Content = enemyPawn;
 
             // Act
             ChessBoard.MovePiece(1, 6, 1, 4, cb); // move black pawn 2 squares upward
@@ -196,8 +196,8 @@ namespace GameManager.Tests.Pieces
 
             // Assert
             Assert.IsTrue(result);
-            Assert.AreEqual(attackingPawn, cb[1, 5].Content);
-            Assert.IsNull(cb[1, 4].Content);
+            Assert.AreEqual(attackingPawn, cb[1, 5]?.Content);
+            Assert.IsNull(cb[1, 4]?.Content);
         }
 
         [TestMethod]
@@ -208,8 +208,8 @@ namespace GameManager.Tests.Pieces
             var attackingPawn = new Pawn(Team.White);
             var enemyPawn = new Pawn(Team.Black);
 
-            cb[0, 4].Content = attackingPawn;
-            cb[1, 6].Content = enemyPawn;
+            cb[0, 4]?.Content = attackingPawn;
+            cb[1, 6]?.Content = enemyPawn;
 
             // Act
             ChessBoard.MovePiece(1, 6, 1, 4, cb); // move black pawn 2 squares forward
@@ -219,7 +219,7 @@ namespace GameManager.Tests.Pieces
 
             // Assert
             Assert.IsFalse(result); // the move should fail because en passant can only be used immediately after the opponent's pawn makes the double move
-            Assert.AreEqual(enemyPawn, cb[1, 4].Content);
+            Assert.AreEqual(enemyPawn, cb[1, 4]?.Content);
         }
 
         [TestMethod]
@@ -228,7 +228,7 @@ namespace GameManager.Tests.Pieces
             // Arrange
             var cb = new ChessBoard(new TurnTeamStub(Team.White));
             var pawn = new Pawn(Team.White);
-            cb[0, 6].Content = pawn;
+            cb[0, 6]?.Content = pawn;
 
             // Act
             var result = ChessBoard.MovePiece(0, 6, 0, 7, cb); // attempt to move to the promotion rank without specifying a promotion piece
@@ -247,13 +247,13 @@ namespace GameManager.Tests.Pieces
             // Arrange
             var cb = new ChessBoard(new TurnTeamStub(Team.White));
             var pawn = new Pawn(Team.White);
-            cb[0, 6].Content = pawn;
+            cb[0, 6]?.Content = pawn;
 
             // Act
             ChessBoard.MovePiece(0, 6, 0, 7, cb, promotionPiece: promotion);
 
             // Assert
-            Assert.IsInstanceOfType(cb[0, 7].Content, expectedType);
+            Assert.IsInstanceOfType(cb[0, 7]?.Content, expectedType);
         }
 
         [TestMethod]
@@ -264,7 +264,7 @@ namespace GameManager.Tests.Pieces
             // Arrange
             var cb = new ChessBoard(new TurnTeamStub(Team.White));
             var pawn = new Pawn(Team.White);
-            cb[0, 6].Content = pawn;
+            cb[0, 6]?.Content = pawn;
 
             // Act
             var result = ChessBoard.MovePiece(0, 6, 0, 7, cb, promotionPiece: promotion);

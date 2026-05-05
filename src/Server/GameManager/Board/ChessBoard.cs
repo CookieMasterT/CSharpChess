@@ -1,32 +1,23 @@
 ﻿using CSharpChess.Game;
 using CSharpChess.Pieces;
 using System.Collections.ObjectModel;
+using System.Security.Cryptography;
 
 namespace CSharpChess.Board
 {
     public enum GameState { Ongoing, WhiteWins, BlackWins, Tie }
 
-    public class ChessBoard
+    /// <summary>
+    /// Chessboard defined as an instance of a game.
+    /// Contains BoardContainer - the board state, the move history and all other game state info.
+    /// Actions performed on the chessboard are done by the class with the specific instance injected into the functions.
+    /// </summary>
+    public class ChessBoard(ITeamTurnProvider turnProvider)
     {
         public const int BoardSize = 8;
+        private readonly BoardContainer _board = new(BoardSize);
 
-        public ChessBoard(ITeamTurnProvider turnProvider)
-        {
-            _board = new BoardSquare[BoardSize][];
-            for (int i = 0; i < BoardSize; i++)
-            {
-                _board[i] = new BoardSquare[BoardSize];
-                for (int k = 0; k < BoardSize; k++)
-                {
-                    _board[i][k] = new BoardSquare(i, k);
-                }
-            }
-
-            _turnProvider = turnProvider;
-        }
-        private readonly BoardSquare[][] _board;
-
-        private readonly ITeamTurnProvider _turnProvider;
+        private readonly ITeamTurnProvider _turnProvider = turnProvider;
 
         public GameState CurrentGameState => _currentGameState;
 
@@ -37,17 +28,18 @@ namespace CSharpChess.Board
             get
             {
                 if (x is >= 0 and < BoardSize && y is >= 0 and < BoardSize)
-                    return _board[x][y];
+                    return _board[x, y];
                 return null;
             }
         }
 
         public Collection<string> MoveHistory { get; } = [];
+        private Collection<BoardContainer> BoardHistory { get; } = [];
 
         public BoardSquare? GetSquare(int x, int y)
         {
             if (x is >= 0 and < BoardSize && y is >= 0 and < BoardSize)
-                return _board[x][y];
+                return _board[x, y];
             return null;
         }
 
@@ -150,6 +142,10 @@ namespace CSharpChess.Board
                 return false;
             if ((ignoreLegality || start.Content.GetLegalMoves(start, targetBoard).Contains(end)) && start.Content.Team == targetBoard._turnProvider.Team)
             {
+                // Before the first move, put the initial board state in the history, for the purposes of threefold move repetition detection.
+                if (targetBoard.BoardHistory.Count == 0)
+                    targetBoard.BoardHistory.Add(FastCloner.FastCloner.DeepClone(targetBoard._board) ?? throw new InvalidOperationException("Failed to clone the board. (Is FastCloner NuGet package installed?)"));
+
                 start.Content.HasMoved = true;
 
                 Team CurrentTeam = targetBoard._turnProvider.Team == Team.White ? Team.Black : Team.White;
@@ -177,9 +173,12 @@ namespace CSharpChess.Board
                 }
 
                 if (!ignoreLegality)
+                {
                     targetBoard.MoveHistory.Add(ChessNotation.CreateNotation(end.Content, end, start, wasCapturing, HasLegalMoves(CurrentTeam, targetBoard), KingInDanger(CurrentTeam, targetBoard), MoveType));
+                    targetBoard.BoardHistory.Add(FastCloner.FastCloner.DeepClone(targetBoard._board) ?? throw new InvalidOperationException("Failed to clone the board. (Is FastCloner NuGet package installed?)"));
 
-                UpdateGameState(targetBoard, wasCapturing, end.Content is Pawn);
+                    UpdateGameState(targetBoard, wasCapturing, end.Content is Pawn);
+                }
                 return true;
             }
             return false;
@@ -214,6 +213,7 @@ namespace CSharpChess.Board
 
             var currentTeam = targetBoard._turnProvider.Team == Team.White ? Team.Black : Team.White;
 
+            // If the current team is in check and has no legal moves, they lose. if they are not in check but have no legal moves, it's a stalemate.
             if (KingInDanger(currentTeam, targetBoard) && !HasLegalMoves(currentTeam, targetBoard))
             {
                 targetBoard._currentGameState = currentTeam == Team.White ? GameState.BlackWins : GameState.WhiteWins;
@@ -223,15 +223,38 @@ namespace CSharpChess.Board
                 targetBoard._currentGameState = GameState.Tie;
             }
 
+            // If the move was a capture or a pawn move, reset the fifty-move counter.
             if (wasCapturing || isPawnMove)
             {
+                // -1 makes it so that the next increment will set it to 0
                 targetBoard._fiftyMoveCounter = -1;
             }
 
+            // Increment the fifty-move counter. if it reaches 50, it's a tie.
             if (currentTeam == Team.Black)
             {
                 targetBoard._fiftyMoveCounter++;
                 if (targetBoard._fiftyMoveCounter >= 50)
+                {
+                    targetBoard._currentGameState = GameState.Tie;
+                }
+            }
+
+            // Check the current board state history for threefold repetition.
+            Dictionary<BoardContainer, int> whiteBoardStates = [];
+            Dictionary<BoardContainer, int> blackBoardStates = [];
+
+            for (int i = 0; i < targetBoard.BoardHistory.Count; i++)
+            {
+                var states = (i % 2 == 0) ? whiteBoardStates : blackBoardStates;
+                var key = targetBoard.BoardHistory[i];
+
+                states.TryGetValue(key, out int currentCount);
+                int newCount = currentCount + 1;
+
+                states[key] = newCount;
+
+                if (newCount == 3)
                 {
                     targetBoard._currentGameState = GameState.Tie;
                 }

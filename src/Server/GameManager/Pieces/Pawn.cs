@@ -73,7 +73,10 @@ namespace CSharpChess.Pieces
             }
             return MV.GetMoves();
         }
+
         private bool _doubleMove;
+        public bool DoubleMove => _doubleMove;
+
         private readonly Collection<(BoardSquare, Func<ChessBoard, BoardSquare, SpecialMoveInfo>)> _specialMoveActions = [];
         public override SpecialMoveInfo SpecialMoveCallback(BoardSquare tile, ChessBoard board, string? promotionPiece = null)
         {
